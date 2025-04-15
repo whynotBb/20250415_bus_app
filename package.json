@@ -16,6 +16,7 @@
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
     "@mui/styled-engine-sc": "^7.0.2",
+    "20250415_bus_app": "file:",
     "ol": "^10.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
