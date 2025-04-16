@@ -97,7 +97,7 @@ export const getTheme = (mode: ThemeMode) =>
 					root: {
 						outline: "0",
 						"&:hover": {
-							backgroundColor: mode === "dark" ? "#e0e0e0" : "#222",
+							backgroundColor: mode === "dark" ? "#222" : "#e0e0e0",
 							BorderColor: "red",
 						},
 						"&:focus": {
