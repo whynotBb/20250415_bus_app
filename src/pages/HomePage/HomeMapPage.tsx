@@ -11,6 +11,7 @@ import { styled } from "@mui/material";
 import CurrentLocationMarker from "./components/Map/CurrentLocationMarker";
 import BusStopMarkers from "./components/Map/BusStopMarkers";
 import BusStopDetail from "./components/Map/BusStopDetail";
+import { StationItem } from "../../models/map";
 
 const vworld_api_key = import.meta.env.VITE_VWORLD_API_KEY;
 
@@ -31,9 +32,19 @@ const HomeMapPage = () => {
 	const markerLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
 
 	//bottom sheet
-	const [isOpen, setIsOpen] = useState<boolean>(true);
-	const bottomSheetHandler = () => {
-		setIsOpen((prev) => !prev);
+	// false : 닫힘 / true:열림
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [stationInfo, setStationInfo] = useState<StationItem | null>(null);
+
+	const bottomSheetHandler = (open: boolean, station?: StationItem) => {
+		console.log("open", open);
+
+		setIsOpen(open);
+		if (station) {
+			setStationInfo(station);
+		} else {
+			setStationInfo(null);
+		}
 	};
 
 	// 기본 위치 좌표
@@ -79,12 +90,12 @@ const HomeMapPage = () => {
 	return (
 		<>
 			<MapContainer ref={mapRef} style={{ width: "100%", height: "calc(100vh - 56px" }}>
-				<BusStopMarkers location={location} map={mapInstance.current} />
+				<BusStopMarkers location={location} map={mapInstance.current} bottomSheetHandler={bottomSheetHandler} setIsOpen={setIsOpen} />
 
 				{/* 현재위치 마커 */}
 				<CurrentLocationMarker location={location} view={viewInstance.current} markerLayer={markerLayerRef.current} defaultCoords={defaultCoords} />
 			</MapContainer>
-			<BusStopDetail isOpen={isOpen} />
+			<BusStopDetail isOpen={isOpen} stationInfo={stationInfo} />
 		</>
 	);
 };

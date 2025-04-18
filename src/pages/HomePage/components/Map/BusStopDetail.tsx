@@ -1,5 +1,10 @@
-import { styled } from "@mui/material";
-
+import { styled, Typography } from "@mui/material";
+import { StationItem } from "../../../../models/map";
+import Loading from "../../../../common/components/Loading";
+interface BusStopDetailProps {
+	isOpen: boolean;
+	stationInfo: StationItem | null;
+}
 const BottomSheet = styled("div")(({ theme }) => ({
 	width: "100%",
 	height: "200px",
@@ -14,8 +19,22 @@ const BottomSheet = styled("div")(({ theme }) => ({
 	transition: "all .3s",
 }));
 
-const BusStopDetail = ({ isOpen }: { isOpen: boolean }) => {
-	return <BottomSheet style={{ bottom: isOpen ? "0" : "-200px" }}>bottom sheet</BottomSheet>;
+const BusStopDetail = ({ isOpen, stationInfo }: BusStopDetailProps) => {
+	console.log("why", isOpen);
+	if (!isOpen) {
+		console.log("없어, 닫아");
+	} else {
+		console.log("있어, 열어");
+	}
+
+	return (
+		<BottomSheet style={{ bottom: isOpen ? "0" : "-200px" }}>
+			<Typography variant="h2">
+				{stationInfo?.stationNm} <small>{stationInfo?.dist}m</small>
+			</Typography>
+			<Typography>ID : {stationInfo?.stationId}</Typography>
+		</BottomSheet>
+	);
 };
 
 export default BusStopDetail;
