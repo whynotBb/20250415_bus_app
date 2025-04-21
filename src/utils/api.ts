@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SEOUL_BUS_API_KEY, SEOUL_BUS_API_URL } from "../configs/mapConfig";
+import { SEOUL_BUS_API_URL } from "../configs/mapConfig";
 
 const api = axios.create({
   baseURL: SEOUL_BUS_API_URL,
