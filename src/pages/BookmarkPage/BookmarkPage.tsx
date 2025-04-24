@@ -1,7 +1,11 @@
-import React from "react";
+import Prepare from "../../common/components/Prepare";
 
 const BookmarkPage = () => {
-	return <div>BookmarkPage</div>;
+	return (
+		<div>
+			<Prepare />
+		</div>
+	);
 };
 
 export default BookmarkPage;

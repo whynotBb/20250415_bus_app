@@ -12,6 +12,7 @@ import CurrentLocationMarker from "./components/Map/CurrentLocationMarker";
 import BusStopMarkers from "./components/Map/BusStopMarkers";
 import BusStopDetail from "./components/Map/BusStopDetail";
 import { StationItem } from "../../models/map";
+import BusDetail from "./components/Map/BusDetail";
 
 const vworld_api_key = import.meta.env.VITE_VWORLD_API_KEY;
 
@@ -23,7 +24,7 @@ const geolocationOptions = {
 
 const MapContainer = styled("div")({});
 
-const HomeMapPage = () => {
+const HomeMapPage = ({ openBusDetail }) => {
 	// 현재위치 가져오기
 	const { location } = useGeoLocation(geolocationOptions);
 	const mapRef = useRef<HTMLDivElement>(null);
@@ -31,7 +32,15 @@ const HomeMapPage = () => {
 	const viewInstance = useRef<View | null>(null);
 	const markerLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
 
-	//bottom sheet
+	// // 버스 정보 bus detail 여닫기
+	// const [isBusDetailOpen, setIsBusDetailOpen] = useState<boolean>(false);
+
+	// const openBusDetail = (arsId: number, busRouteId: number) => {
+	// 	console.log("openBusDetail", arsId, busRouteId);
+	// 	setIsBusDetailOpen(true);
+	// };
+
+	//bottom sheet : 버스 정류장 정보 여닫기
 	// false : 닫힘 / true:열림
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [stationInfo, setStationInfo] = useState<StationItem | null>(null);
@@ -95,7 +104,8 @@ const HomeMapPage = () => {
 				{/* 현재위치 마커 */}
 				<CurrentLocationMarker location={location} view={viewInstance.current} markerLayer={markerLayerRef.current} defaultCoords={defaultCoords} />
 			</MapContainer>
-			<BusStopDetail isOpen={isOpen} stationInfo={stationInfo} />
+			<BusStopDetail isOpen={isOpen} stationInfo={stationInfo} openBusDetail={openBusDetail} />
+			{/* {isBusDetailOpen && <BusDetail />} */}
 		</>
 	);
 };

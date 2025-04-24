@@ -1,5 +1,5 @@
 import { keyframes, styled, Typography } from "@mui/material";
-import { StationItem } from "../../../../models/map";
+import { StationByUidItem, StationItem } from "../../../../models/map";
 import useGetStationByUidItem from "../../../../hooks/useGetStationByUidItem";
 import { useEffect, useState } from "react";
 import Loading from "../../../../common/components/Loading"; // Import Swiper styles
@@ -13,6 +13,7 @@ import { normalizeItemList } from "../../../../utils/data/normalizeItemList";
 interface BusStopDetailProps {
 	isOpen: boolean;
 	stationInfo: StationItem | null;
+	openBusDetail: (busDetailInfo: StationByUidItem) => void;
 }
 const BottomSheet = styled("div")(({ theme }) => ({
 	width: "100%",
@@ -117,7 +118,7 @@ const RotatingCircle = styled("span")(({ theme }) => ({
 	pointerEvents: "none",
 }));
 
-const BusStopDetail = ({ isOpen, stationInfo }: BusStopDetailProps) => {
+const BusStopDetail = ({ isOpen, stationInfo, openBusDetail }: BusStopDetailProps) => {
 	const arsId = stationInfo?.arsId ?? 0;
 	// refetch > react-query 에서 제공하는 기능
 	const { data, refetch, isLoading } = useGetStationByUidItem(arsId);
@@ -164,7 +165,7 @@ const BusStopDetail = ({ isOpen, stationInfo }: BusStopDetailProps) => {
 		}
 	}, [stationInfo, busInfo]);
 	const itemList = normalizeItemList(busInfo?.itemList).sort((a, b) => {
-		const getSortValue = (item) => {
+		const getSortValue = (item: StationByUidItem) => {
 			if (!item.traTime1 || item.arrmsg1 === "운행종료") {
 				return Infinity;
 			}
@@ -187,10 +188,9 @@ const BusStopDetail = ({ isOpen, stationInfo }: BusStopDetailProps) => {
 				</Title>
 				<DetailList>
 					<Swiper navigation={true} modules={[Navigation]} slidesPerView={2} spaceBetween={6} className="mySwiper">
-						{/* // list item 이 1개이면 obj로 들어옴, 수정해야함 */}
 						{itemList.length > 0 ? (
 							itemList.map((item, idx) => (
-								<SwiperSlide className="item" key={idx}>
+								<SwiperSlide className="item" key={idx} onClick={() => openBusDetail(item)}>
 									<div>
 										<BusName className={item.routeType === 1 ? "skyBlue" : item.routeType === 2 || item.routeType === 4 ? "green" : item.routeType === 3 ? "blue" : item.routeType === 5 ? "yellow" : item.routeType === 6 ? "red" : "gray"}>{item.rtNm}</BusName>
 										<small>다음 : {item.nxtStn}</small>

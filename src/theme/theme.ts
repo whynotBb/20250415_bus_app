@@ -37,9 +37,17 @@ export const getTheme = (mode: ThemeMode) =>
 				fontSize: "24px",
 			},
 			h2: {
-				fontSize: "1rem",
+				fontSize: "20px",
+				fontWeight: 700,
+			},
+			h3: {
+				fontSize: "18px",
+				fontWeight: 600,
 			},
 			body1: {
+				fontSize: "16px",
+			},
+			body2: {
 				fontSize: "14px",
 			},
 			subtitle1: {
