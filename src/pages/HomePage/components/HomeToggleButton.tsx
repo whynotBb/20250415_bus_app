@@ -14,6 +14,10 @@ const FloatButtonBx = styled("div")(({ theme }) => ({
 		display: "flex",
 		flexDirection: "column",
 	},
+	button: {
+		padding: "7px",
+		border: "none",
+	},
 }));
 
 interface HomeToggleButtonProps {
