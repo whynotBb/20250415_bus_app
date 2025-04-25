@@ -1,5 +1,5 @@
 import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import React from "react";
+
 import { Alignment } from "../../../models/home";
 import MapIcon from "@mui/icons-material/Map";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";

@@ -1,6 +1,6 @@
 import { Home, NotificationsActive, Star } from "@mui/icons-material";
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
 
 const BottomNav = () => {

@@ -13,7 +13,7 @@ import { normalizeItemList } from "../../../../utils/data/normalizeItemList";
 interface BusStopDetailProps {
 	isOpen: boolean;
 	stationInfo: StationItem | null;
-	openBusDetail: (busDetailInfo: StationByUidItem) => void;
+	openBusDetail: (busDetailInfo: StationByUidItem) => StationByUidItem;
 }
 const BottomSheet = styled("div")(({ theme }) => ({
 	width: "100%",

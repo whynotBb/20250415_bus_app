@@ -1,5 +1,3 @@
-import React from "react";
-
 import { IconButton, styled } from "@mui/material";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { useColorMode } from "../../theme/useColorMode";
