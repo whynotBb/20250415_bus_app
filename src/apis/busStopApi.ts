@@ -10,7 +10,7 @@ export const getStationsByPos = async (
   console.log("getStateion", location, radius);
 
   try {
-    const response = await axios.get(`/api/api/rest/stationinfo/getStationByPos`, {
+    const response = await axios.get(`/api/stationinfo/getStationByPos`, {
       params: {
         serviceKey: SEOUL_BUS_API_KEY,
         tmX: location.longitude,
