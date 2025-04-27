@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SEOUL_BUS_API_KEY, SEOUL_BUS_API_URL } from "../configs/mapConfig";
+import { SEOUL_BUS_API_KEY } from "../configs/mapConfig";
 import { GetStationsByPosResponse, ILocation, StationByUidItem, StationItem } from "../models/map";
 import { XMLParser } from "fast-xml-parser";
 
@@ -10,7 +10,7 @@ export const getStationsByPos = async (
   console.log("getStateion", location, radius);
 
   try {
-    const response = await axios.get(`${SEOUL_BUS_API_URL}/stationinfo/getStationByPos`, {
+    const response = await axios.get(`/api/api/rest/stationinfo/getStationByPos`, {
       params: {
         serviceKey: SEOUL_BUS_API_KEY,
         tmX: location.longitude,
@@ -31,7 +31,7 @@ export const getStationsByPos = async (
 
 export const getStationByUidItem = async (arsId: number): Promise<GetStationsByPosResponse<StationByUidItem>> => {
   try {
-    const response = await axios.get(`${SEOUL_BUS_API_URL}/stationinfo/getStationByUid`, {
+    const response = await axios.get("/api/api/rest/stationinfo/getStationByUid", {
       params: {
         serviceKey: SEOUL_BUS_API_KEY,
         arsId: arsId,
