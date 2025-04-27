@@ -13,7 +13,7 @@ const HomePage = () => {
   const [isBusDetailOpen, setIsBusDetailOpen] = useState<boolean>(false);
   const [busDetailInfo, setBusDetailInfo] = useState<StationByUidItem | null>(null);
   // 지도 | text 보기 토글
-  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: Alignment | null) => {
+  const handleChange = (_event: React.MouseEvent<HTMLElement>, newAlignment: Alignment | null) => {
     if (newAlignment !== null) {
       setAlignment(newAlignment);
     }
