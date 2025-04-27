@@ -1,25 +1,28 @@
-// netlify/functions/getStationByUid.js
 import axios from "axios";
 
-export const handler = async function (event, context) {
-  const { arsId, serviceKey } = event.queryStringParameters;
+export async function handler(event) {
+  const { tmX, tmY, radius } = event.queryStringParameters;
 
-  const url = `https://ws.bus.go.kr/api/rest/stationinfo/getStationByPos`;
   try {
-    const response = await axios.get(url, {
+    const response = await axios.get("https://ws.bus.go.kr/api/rest/stationinfo/getStationByPos", {
       params: {
-        serviceKey,
-        arsId,
+        serviceKey: import.meta.env.SEOUL_BUS_API_KEY,
+        tmX,
+        tmY,
+        radius,
       },
+      responseType: "text",
     });
+
     return {
       statusCode: 200,
-      body: JSON.stringify(response.data),
+      body: response.data,
     };
   } catch (error) {
+    console.error("Netlify Function Error:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ message: error.message }),
     };
   }
-};
+}

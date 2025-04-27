@@ -11,9 +11,9 @@ export const getStationsByPos = async (
 
   try {
     // const response = await axios.get(`/api/api/rest/stationinfo/getStationByPos`, {
-    const response = await axios.get(`https://bbsbus-app.netlify.app/api/rest/stationinfo/getStationByPos`, {
+    const response = await axios.get(`/.netlify/functions/getStationsByPos`, {
       params: {
-        serviceKey: SEOUL_BUS_API_KEY,
+        // serviceKey: SEOUL_BUS_API_KEY,
         tmX: location.longitude,
         tmY: location.latitude,
         radius,
