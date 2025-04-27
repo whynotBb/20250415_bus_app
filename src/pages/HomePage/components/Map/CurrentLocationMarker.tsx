@@ -8,51 +8,51 @@ import VectorLayer from "ol/layer/Vector";
 import { View } from "ol";
 
 interface CurrentLocationMarkerProps {
-	location: { latitude: number; longitude: number } | null;
-	view: View | null;
-	markerLayer: VectorLayer<VectorSource> | null;
-	defaultCoords: [number, number];
+  location: { latitude: number; longitude: number } | undefined;
+  view: View | null;
+  markerLayer: VectorLayer<VectorSource> | null;
+  defaultCoords: [number, number];
 }
 
 const CurrentLocationMarker = ({ location, view, markerLayer, defaultCoords }: CurrentLocationMarkerProps) => {
-	console.log("CurrentLocationMarker location", location);
+  console.log("CurrentLocationMarker location", location);
 
-	useEffect(() => {
-		if (!view || !markerLayer) return;
+  useEffect(() => {
+    if (!view || !markerLayer) return;
 
-		const coords = location ? [location.longitude, location.latitude] : defaultCoords;
+    const coords = location ? [location.longitude, location.latitude] : defaultCoords;
 
-		// 지도 중심 이동
-		view.setCenter(fromLonLat(coords));
+    // 지도 중심 이동
+    view.setCenter(fromLonLat(coords));
 
-		// 위치 마커 생성
-		if (location) {
-			const point = new Point(fromLonLat(coords));
-			const marker = new Feature(point);
+    // 위치 마커 생성
+    if (location) {
+      const point = new Point(fromLonLat(coords));
+      const marker = new Feature(point);
 
-			const outerCircle = new Style({
-				image: new CircleStyle({
-					radius: 15,
-					fill: new Fill({ color: "rgba(0, 173, 181, 0.3)" }),
-				}),
-			});
+      const outerCircle = new Style({
+        image: new CircleStyle({
+          radius: 15,
+          fill: new Fill({ color: "rgba(0, 173, 181, 0.3)" }),
+        }),
+      });
 
-			const innerCircle = new Style({
-				image: new CircleStyle({
-					radius: 5,
-					fill: new Fill({ color: "rgb(0, 173, 181)" }),
-				}),
-			});
+      const innerCircle = new Style({
+        image: new CircleStyle({
+          radius: 5,
+          fill: new Fill({ color: "rgb(0, 173, 181)" }),
+        }),
+      });
 
-			marker.setStyle([outerCircle, innerCircle]);
+      marker.setStyle([outerCircle, innerCircle]);
 
-			const source = markerLayer.getSource();
-			source?.clear();
-			source?.addFeature(marker);
-		}
-	}, [location, view, markerLayer]);
+      const source = markerLayer.getSource();
+      source?.clear();
+      source?.addFeature(marker);
+    }
+  }, [location, view, markerLayer]);
 
-	return null; // 렌더링할 UI 없음
+  return null; // 렌더링할 UI 없음
 };
 
 export default CurrentLocationMarker;

@@ -15,7 +15,7 @@ interface Props {
 }
 
 const BusStopMarkers = ({ location, map, bottomSheetHandler }: Props) => {
-  const [radius, setRadius] = useState<number>(1000);
+  const [radius] = useState<number>(1000);
   const { data } = useGetStationsByPos({ location, radius });
   const stationList = data?.ServiceResult.msgBody.itemList;
   console.log("bus stop data :", stationList);

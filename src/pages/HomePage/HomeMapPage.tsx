@@ -138,7 +138,9 @@ const HomeMapPage = ({ openBusDetail }: { openBusDetail: (busDetailInfo: Station
   return (
     <>
       <MapContainer ref={mapRef} style={{ width: "100%", height: "calc(100vh - 56px" }}>
-        <BusStopMarkers location={location} map={mapInstance.current} bottomSheetHandler={bottomSheetHandler} />
+        {location && (
+          <BusStopMarkers location={location} map={mapInstance.current} bottomSheetHandler={bottomSheetHandler} />
+        )}
 
         {/* 현재위치 마커 */}
         <CurrentLocationMarker

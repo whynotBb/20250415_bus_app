@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ILocation } from "../../models/map";
+import { ILocation } from "../models/map";
 
 export const useGeoLocation = (options = {}) => {
   const [location, setLocation] = useState<ILocation>();
