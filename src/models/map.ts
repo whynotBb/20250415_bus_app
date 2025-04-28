@@ -2,6 +2,10 @@ export type ILocation = {
 	latitude: number;
 	longitude: number;
 };
+export type LocationByCurrent = {
+	gpsLati: number;
+	gpsLong: number;
+};
 export interface GetStationsByPosRequest extends ILocation {
 	radius: number;
 }
