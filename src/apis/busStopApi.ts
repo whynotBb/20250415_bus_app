@@ -28,8 +28,10 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 	console.log("getStateion", location, radius);
 
 	try {
-		const response = await axios.get(`/api/api/rest/stationinfo/getStationByPos`, {
-			// const response = await axios.get(`/.netlify/functions/getStationsByPos`, {
+		const response = await axios.get(`http://ws.bus.go.kr/api/rest/stationinfo/getStationByPos`, {
+			headers: {
+				"Content-Type": "application/json",
+			},
 			params: {
 				serviceKey: SEOUL_BUS_API_KEY,
 				tmX: location.longitude,
