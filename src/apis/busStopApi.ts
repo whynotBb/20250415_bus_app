@@ -7,7 +7,7 @@ export const getStationByCurrent = async (location: ILocation) => {
 	console.log("getStationByCurrent", location);
 
 	try {
-		const response = await axios.get(`http://apis.data.go.kr/1613000/BusSttnInfoInqireService/getCrdntPrxmtSttnList`, {
+		const response = await axios.get(`https://apis.data.go.kr/1613000/BusSttnInfoInqireService/getCrdntPrxmtSttnList`, {
 			params: {
 				serviceKey: "n3zbZ++zACobqLxjpnF7be8B75BPXY4NbIggHE3dwiM908CKZKzxt9vBS/gWdeXm2aSlK8pw8thh64wgmu7Tug==",
 				gpsLong: location.longitude,
