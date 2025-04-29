@@ -1,5 +1,6 @@
 import { Home, NotificationsActive, Star } from "@mui/icons-material";
 import { BottomNavigation, BottomNavigationAction, Paper, styled } from "@mui/material";
+import SunnyIcon from "@mui/icons-material/Sunny";
 
 import { useNavigate } from "react-router-dom";
 
@@ -32,6 +33,13 @@ const BottomNav = () => {
           icon={<NotificationsActive />}
           onClick={() => {
             navigate("/alarm");
+          }}
+        />
+        <BottomNavigationAction
+          label="Weather"
+          icon={<SunnyIcon />}
+          onClick={() => {
+            navigate("/weather");
           }}
         />
       </BottomNavigation>

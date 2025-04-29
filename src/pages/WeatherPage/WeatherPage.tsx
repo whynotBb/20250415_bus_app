@@ -1,6 +1,6 @@
 import Prepare from "../../common/components/Prepare";
 
-const HomeTextPage = () => {
+const WeatherPage = () => {
   return (
     <div>
       <Prepare />
@@ -8,4 +8,4 @@ const HomeTextPage = () => {
   );
 };
 
-export default HomeTextPage;
+export default WeatherPage;

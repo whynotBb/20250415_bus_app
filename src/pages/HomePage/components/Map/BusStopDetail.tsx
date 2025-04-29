@@ -191,19 +191,21 @@ const BusStopDetail = ({ isOpen, stationInfo, openBusDetail }: BusStopDetailProp
           <Swiper navigation={true} modules={[Navigation]} slidesPerView={2} spaceBetween={6} className="mySwiper">
             {itemList.length > 0 ? (
               itemList.map((item, idx) => (
-                <SwiperSlide className="item" key={idx} onClick={() => openBusDetail(item)}>
+                <SwiperSlide className="item" key={idx} onClick={() => openBusDetail({ ...item })}>
                   <div>
                     <BusName
                       className={
-                        item.routeType === 1
+                        item.routeType === "1"
                           ? "skyBlue"
-                          : item.routeType === 2 || item.routeType === 4
+                          : item.routeType === "2"
                           ? "green"
-                          : item.routeType === 3
+                          : item.routeType === "3"
                           ? "blue"
-                          : item.routeType === 5
+                          : item.routeType === "4"
+                          ? "green"
+                          : item.routeType === "5"
                           ? "yellow"
-                          : item.routeType === 6
+                          : item.routeType === "6"
                           ? "red"
                           : "gray"
                       }
