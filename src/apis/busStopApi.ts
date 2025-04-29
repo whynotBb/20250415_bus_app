@@ -7,17 +7,12 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 	console.log("getStateion", location, radius);
 
 	try {
-		const response = await axios.get(`api/api/rest/stationinfo/getStationByPos`, {
-			headers: {
-				"Content-Type": "application/json",
-			},
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getStationsByPos?tmX=127.0039887&tmY=37.4832067&radius=1000`, {
 			params: {
-				serviceKey: SEOUL_BUS_API_KEY,
 				tmX: location.longitude,
 				tmY: location.latitude,
 				radius,
 			},
-			responseType: "text", //응답을 문자열로 받기
 		});
 
 		//json 으로 파싱
@@ -28,6 +23,31 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 		throw new Error(`fail to fetch get stations by pos : ${error}`);
 	}
 };
+// export const getStationsByPos = async (location: ILocation, radius: number): Promise<GetStationsByPosResponse<StationItem>> => {
+// 	console.log("getStateion", location, radius);
+
+// 	try {
+// 		const response = await axios.get(`api/api/rest/stationinfo/getStationByPos`, {
+// 			headers: {
+// 				"Content-Type": "application/json",
+// 			},
+// 			params: {
+// 				serviceKey: SEOUL_BUS_API_KEY,
+// 				tmX: location.longitude,
+// 				tmY: location.latitude,
+// 				radius,
+// 			},
+// 			responseType: "text", //응답을 문자열로 받기
+// 		});
+
+// 		//json 으로 파싱
+// 		const parser = new XMLParser();
+// 		const json = parser.parse(response.data);
+// 		return json;
+// 	} catch (error) {
+// 		throw new Error(`fail to fetch get stations by pos : ${error}`);
+// 	}
+// };
 
 export const getStationByUidItem = async (arsId: number): Promise<GetStationsByPosResponse<StationByUidItem>> => {
 	try {
