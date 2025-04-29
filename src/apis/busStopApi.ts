@@ -7,7 +7,7 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 	console.log("getStateion", location, radius);
 
 	try {
-		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getStationsByPos?tmX=127.0039887&tmY=37.4832067&radius=1000`, {
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getStationsByPos`, {
 			params: {
 				tmX: location.longitude,
 				tmY: location.latitude,
