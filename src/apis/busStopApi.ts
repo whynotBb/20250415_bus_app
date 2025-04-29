@@ -1,7 +1,7 @@
 import axios from "axios";
 // import { SEOUL_BUS_API_KEY } from "../configs/mapConfig";
 import { GetStationsByPosResponse, ILocation, StationByUidItem, StationItem } from "../models/map";
-import { XMLParser } from "fast-xml-parser";
+// import { XMLParser } from "fast-xml-parser";
 
 export const getStationsByPos = async (location: ILocation, radius: number): Promise<GetStationsByPosResponse<StationItem>> => {
 	console.log("getStateion", location, radius);
@@ -15,13 +15,9 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 			},
 		});
 
-		console.log("getStationsByPos res", response);
-		//json 으로 파싱
-		const parser = new XMLParser();
-		const json = parser.parse(response.data);
-		console.log("json 으로 변환 되었니?", json);
+		console.log("getStationsByPos data !!!", response.data);
 
-		return json;
+		return response.data;
 	} catch (error) {
 		throw new Error(`fail to fetch get stations by pos : ${error}`);
 	}
@@ -34,12 +30,9 @@ export const getStationByUidItem = async (arsId: number): Promise<GetStationsByP
 				arsId: arsId,
 			},
 		});
-		//json 으로 파싱
-		console.log("getStationByUidItem res", response);
+		console.log("getStationByUidItem data !!!", response.data);
 
-		const parser = new XMLParser();
-		const json = parser.parse(response.data);
-		return json;
+		return response.data;
 	} catch (error) {
 		throw new Error(`fail to fetch get station by id : ${error}`);
 	}
