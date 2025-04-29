@@ -15,6 +15,7 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 			},
 		});
 
+		console.log("getStationsByPos res", response);
 		//json 으로 파싱
 		const parser = new XMLParser();
 		const json = parser.parse(response.data);
@@ -32,6 +33,8 @@ export const getStationByUidItem = async (arsId: number): Promise<GetStationsByP
 			},
 		});
 		//json 으로 파싱
+		console.log("getStationByUidItem res", response);
+
 		const parser = new XMLParser();
 		const json = parser.parse(response.data);
 		return json;
