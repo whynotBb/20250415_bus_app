@@ -19,6 +19,8 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 		//json 으로 파싱
 		const parser = new XMLParser();
 		const json = parser.parse(response.data);
+		console.log("json 으로 변환 되었니?", json);
+
 		return json;
 	} catch (error) {
 		throw new Error(`fail to fetch get stations by pos : ${error}`);
