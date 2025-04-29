@@ -7,7 +7,6 @@ import useGetStationsByPos from "../../../../hooks/useGetStationsByPos";
 import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj";
 import { Icon, Style } from "ol/style";
-import useGetStationByCurrent from "../../../../hooks/useGetStationByCurrent";
 
 interface Props {
 	location: ILocation;
@@ -20,8 +19,6 @@ const BusStopMarkers = ({ location, map, bottomSheetHandler }: Props) => {
 
 	const [radius] = useState<number>(1000);
 	const { data } = useGetStationsByPos({ location, radius });
-	const { data: stationByCurrentData } = useGetStationByCurrent({ location });
-	console.log("stationByCurrentData", stationByCurrentData);
 	// console.log("BusStopMarkers data", data);
 
 	const stationList = data?.ServiceResult.msgBody.itemList;
