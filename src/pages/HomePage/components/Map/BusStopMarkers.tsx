@@ -80,7 +80,7 @@ const BusStopMarkers = ({ location, map, bottomSheetHandler }: Props) => {
 						anchor: [0.5, 46],
 						anchorXUnits: "fraction",
 						anchorYUnits: "pixels",
-						src: "/src/assets/ico_bus_stop.png",
+						src: "/assets/ico_bus_stop.png",
 						scale: 0.2,
 					}),
 				})
