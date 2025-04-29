@@ -5,7 +5,7 @@ import MapIcon from "@mui/icons-material/Map";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
 const FloatButtonBx = styled("div")(({ theme }) => ({
-  position: "fixed",
+  position: "absolute",
   top: "20px",
   left: "20px",
   zIndex: "10",

@@ -17,6 +17,7 @@ interface BusStopDetailProps {
 }
 const BottomSheet = styled("div")(({ theme }) => ({
   width: "100%",
+  maxWidth: "768px",
   height: "300px",
   position: "fixed",
   bottom: "-300px",

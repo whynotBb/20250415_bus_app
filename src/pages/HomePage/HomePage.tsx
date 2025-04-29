@@ -5,6 +5,10 @@ import HomeMapPage from "./HomeMapPage";
 import HomeTextPage from "./HomeTextPage";
 import BusDetail from "./components/Map/BusDetail";
 import { StationByUidItem } from "../../models/map";
+import { styled } from "@mui/material";
+const HomeWr = styled("div")({
+  position: "relative",
+});
 
 const HomePage = () => {
   // 지도 | text 보기 토글
@@ -28,11 +32,11 @@ const HomePage = () => {
     setBusDetailInfo(busDetailInfo);
   };
   return (
-    <div>
+    <HomeWr>
       <HomeToggleButton alignment={alignment} handleChange={handleChange} />
       {alignment === "map" ? <HomeMapPage openBusDetail={openBusDetail} /> : <HomeTextPage />}
       {isBusDetailOpen && busDetailInfo !== null && <BusDetail busDetailInfo={busDetailInfo} />}
-    </div>
+    </HomeWr>
   );
 };
 
