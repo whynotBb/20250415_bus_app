@@ -24,6 +24,10 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 };
 
 export const getStationByUidItem = async (arsId: number): Promise<GetStationsByPosResponse<StationByUidItem>> => {
+	console.log("getStationByUidItem : 정류장정보 가져오기 api 호출! : arsId는?", arsId);
+	if (arsId === 0) {
+		throw new Error("Invalid arsId: 0. API call skipped.");
+	}
 	try {
 		const response = await axios.get("https://bus-proxy-server.vercel.app/api/getStationByUid", {
 			params: {
@@ -31,7 +35,6 @@ export const getStationByUidItem = async (arsId: number): Promise<GetStationsByP
 			},
 		});
 		console.log("getStationByUidItem data !!!", response.data);
-
 		return response.data;
 	} catch (error) {
 		throw new Error(`fail to fetch get station by id : ${error}`);

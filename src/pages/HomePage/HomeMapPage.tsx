@@ -20,142 +20,136 @@ import WeatherWidget from "./components/WeatherWidget";
 const vworld_api_key = import.meta.env.VITE_VWORLD_API_KEY;
 
 const geolocationOptions = {
-  enableHighAccuracy: true,
-  timeout: 1000 * 10,
-  maximumAge: 1000 * 3600 * 24,
+	enableHighAccuracy: true,
+	timeout: 1000 * 10,
+	maximumAge: 1000 * 3600 * 24,
 };
 
 const MapContainer = styled("div")({});
 
 const HomeMapPage = ({ openBusDetail }: { openBusDetail: (busDetailInfo: StationByUidItem) => void }) => {
-  // 기본 위치 좌표
-  const defaultCoords: [number, number] = [126.9783785, 37.5666612]; // 서울시청
-  // 현재위치 가져오기
-  const { location } = useGeoLocation(geolocationOptions);
-  const [mapLocation, setMapLocation] = useState<ILocation>();
+	// 기본 위치 좌표
+	const defaultCoords: [number, number] = [126.9783785, 37.5666612]; // 서울시청
+	// 현재위치 가져오기
+	const { location } = useGeoLocation(geolocationOptions);
+	const [mapLocation, setMapLocation] = useState<ILocation>();
 
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<OlMap | null>(null);
-  const viewInstance = useRef<View | null>(null);
-  const markerLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
+	const mapRef = useRef<HTMLDivElement>(null);
+	const mapInstance = useRef<OlMap | null>(null);
+	const viewInstance = useRef<View | null>(null);
+	const markerLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
 
-  //bottom sheet : 버스 정류장 정보 여닫기
-  // false : 닫힘 / true:열림
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [stationInfo, setStationInfo] = useState<StationItem | null>(null);
+	//bottom sheet : 버스 정류장 정보 여닫기
+	// false : 닫힘 / true:열림
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [stationInfo, setStationInfo] = useState<StationItem | null>(null);
 
-  const bottomSheetHandler = (open: boolean, station?: StationItem) => {
-    setIsOpen(open);
-    if (station) {
-      setStationInfo(station);
-      setMapLocation({ latitude: station.gpsY, longitude: station.gpsX });
-      console.log("bottomSheetHandler station", station);
-    } else {
-      setStationInfo(null);
-    }
-  };
+	const bottomSheetHandler = (open: boolean, station?: StationItem) => {
+		setIsOpen(open);
 
-  // v world 지도 그리기
-  useEffect(() => {
-    const tileLayer = new TileLayer({
-      source: new XYZ({
-        url: `https://api.vworld.kr/req/wmts/1.0.0/${vworld_api_key}/Base/{z}/{y}/{x}.png`,
-        attributions: "",
-      }),
-    });
+		if (station) {
+			setStationInfo(station);
+			setMapLocation({ latitude: station.gpsY, longitude: station.gpsX });
+			console.log("bottomSheetHandler station", station);
+		} else {
+			setStationInfo(null);
+		}
+	};
 
-    const view = new View({
-      center: fromLonLat(defaultCoords),
-      zoom: 18,
-    });
+	// v world 지도 그리기
+	useEffect(() => {
+		const tileLayer = new TileLayer({
+			source: new XYZ({
+				url: `https://api.vworld.kr/req/wmts/1.0.0/${vworld_api_key}/Base/{z}/{y}/{x}.png`,
+				attributions: "",
+			}),
+		});
 
-    const map = new OlMap({
-      target: mapRef.current || undefined,
-      controls: defaultControls({ zoom: false, rotate: false, attribution: false }),
-      layers: [tileLayer],
-      view: view,
-    });
+		const view = new View({
+			center: fromLonLat(defaultCoords),
+			zoom: 18,
+		});
 
-    // 마커 레이어 생성 및 추가
-    const markerSource = new VectorSource();
-    const markerLayer = new VectorLayer({
-      source: markerSource,
-    });
-    map.addLayer(markerLayer);
-    markerLayerRef.current = markerLayer;
+		const map = new OlMap({
+			target: mapRef.current || undefined,
+			controls: defaultControls({ zoom: false, rotate: false, attribution: false }),
+			layers: [tileLayer],
+			view: view,
+		});
 
-    mapInstance.current = map;
-    viewInstance.current = view;
+		// 마커 레이어 생성 및 추가
+		const markerSource = new VectorSource();
+		const markerLayer = new VectorLayer({
+			source: markerSource,
+		});
+		map.addLayer(markerLayer);
+		markerLayerRef.current = markerLayer;
 
-    return () => {
-      map.setTarget(undefined);
-    };
-  }, []);
+		mapInstance.current = map;
+		viewInstance.current = view;
 
-  useEffect(() => {
-    if (!mapLocation || !viewInstance.current || !markerLayerRef.current) return;
+		return () => {
+			map.setTarget(undefined);
+		};
+	}, []);
 
-    const coords = [mapLocation.longitude, mapLocation.latitude];
+	useEffect(() => {
+		if (!mapLocation || !viewInstance.current || !markerLayerRef.current) return;
 
-    // 지도 중심 이동
-    viewInstance.current.setCenter(fromLonLat(coords));
-    viewInstance.current.setZoom(19);
+		const coords = [mapLocation.longitude, mapLocation.latitude];
 
-    // 위치 마커 생성
-    if (location) {
-      const point = new Point(fromLonLat(coords));
-      const focusMarker = new Feature(point);
-      focusMarker.setId("focus-marker"); // ID 설정
+		// 지도 중심 이동
+		viewInstance.current.setCenter(fromLonLat(coords));
+		viewInstance.current.setZoom(19);
 
-      const outerCircle = new Style({
-        image: new CircleStyle({
-          radius: 15,
-          fill: new Fill({ color: "rgba(181, 0, 112, 0.3)" }),
-        }),
-      });
+		// 위치 마커 생성
+		if (location) {
+			const point = new Point(fromLonLat(coords));
+			const focusMarker = new Feature(point);
+			focusMarker.setId("focus-marker"); // ID 설정
 
-      const innerCircle = new Style({
-        image: new CircleStyle({
-          radius: 5,
-          fill: new Fill({ color: "rgb(181, 0, 181)" }),
-        }),
-      });
+			const outerCircle = new Style({
+				image: new CircleStyle({
+					radius: 15,
+					fill: new Fill({ color: "rgba(181, 0, 112, 0.3)" }),
+				}),
+			});
 
-      focusMarker.setStyle([outerCircle, innerCircle]);
+			const innerCircle = new Style({
+				image: new CircleStyle({
+					radius: 5,
+					fill: new Fill({ color: "rgb(181, 0, 181)" }),
+				}),
+			});
 
-      const source = markerLayerRef.current.getSource();
-      // source?.clear(); // 마커 다지우기
+			focusMarker.setStyle([outerCircle, innerCircle]);
 
-      // 기존 focus-marker 삭제
-      const existingFocus = source?.getFeatureById("focus-marker");
-      if (existingFocus) {
-        source?.removeFeature(existingFocus);
-      }
+			const source = markerLayerRef.current.getSource();
+			// source?.clear(); // 마커 다지우기
 
-      source?.addFeature(focusMarker);
-    }
-  }, [mapLocation]);
+			// 기존 focus-marker 삭제
+			const existingFocus = source?.getFeatureById("focus-marker");
+			if (existingFocus) {
+				source?.removeFeature(existingFocus);
+			}
 
-  return (
-    <>
-      <MapContainer ref={mapRef} style={{ width: "100%", height: "calc(100vh - 56px" }}>
-        {location && (
-          <BusStopMarkers location={location} map={mapInstance.current} bottomSheetHandler={bottomSheetHandler} />
-        )}
+			source?.addFeature(focusMarker);
+		}
+	}, [mapLocation]);
 
-        {/* 현재위치 마커 */}
-        <CurrentLocationMarker
-          location={location}
-          view={viewInstance.current}
-          markerLayer={markerLayerRef.current}
-          defaultCoords={defaultCoords}
-        />
-      </MapContainer>
-      <WeatherWidget />
-      <BusStopDetail isOpen={isOpen} stationInfo={stationInfo} openBusDetail={openBusDetail} />
-      {/* {isBusDetailOpen && <BusDetail />} */}
-    </>
-  );
+	return (
+		<>
+			<MapContainer ref={mapRef} style={{ width: "100%", height: "calc(100vh - 56px" }}>
+				{location && <BusStopMarkers location={location} map={mapInstance.current} bottomSheetHandler={bottomSheetHandler} />}
+
+				{/* 현재위치 마커 */}
+				<CurrentLocationMarker location={location} view={viewInstance.current} markerLayer={markerLayerRef.current} defaultCoords={defaultCoords} />
+			</MapContainer>
+			<WeatherWidget />
+			<BusStopDetail isOpen={isOpen} stationInfo={stationInfo} openBusDetail={openBusDetail} />
+			{/* {isBusDetailOpen && <BusDetail />} */}
+		</>
+	);
 };
 
 export default HomeMapPage;

@@ -16,8 +16,8 @@ interface Props {
 
 const BusStopMarkers = ({ location, map, bottomSheetHandler }: Props) => {
 	console.log(location);
-
-	const [radius] = useState<number>(1000);
+	// 버스정류장 가져오기 반경 설정
+	const [radius] = useState<number>(500);
 	const { data } = useGetStationsByPos({ location, radius });
 	// console.log("BusStopMarkers data", data);
 
