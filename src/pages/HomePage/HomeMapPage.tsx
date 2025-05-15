@@ -145,7 +145,7 @@ const HomeMapPage = ({ openBusDetail }: { openBusDetail: (busDetailInfo: Station
 				{/* 현재위치 마커 */}
 				<CurrentLocationMarker location={location} view={viewInstance.current} markerLayer={markerLayerRef.current} defaultCoords={defaultCoords} />
 			</MapContainer>
-			<WeatherWidget />
+			{location && <WeatherWidget location={location} />}
 			<BusStopDetail isOpen={isOpen} stationInfo={stationInfo} openBusDetail={openBusDetail} />
 			{/* {isBusDetailOpen && <BusDetail />} */}
 		</>

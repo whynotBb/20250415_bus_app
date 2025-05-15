@@ -1,11 +1,15 @@
 import Prepare from "../../common/components/Prepare";
+import { useAirInfoStore } from "../../stores/useAirInfoStore";
 
 const WeatherPage = () => {
-  return (
-    <div>
-      <Prepare />
-    </div>
-  );
+	const { airInfo } = useAirInfoStore();
+	console.log("WeatherPage - air info", airInfo);
+
+	return (
+		<div>
+			<Prepare />
+		</div>
+	);
 };
 
 export default WeatherPage;
