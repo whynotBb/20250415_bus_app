@@ -3,19 +3,18 @@ import { SEOUL_BUS_API_KEY } from "../configs/mapConfig";
 import { AirInfoDataResponse } from "../models/airInfo";
 import { ILocation } from "../models/map";
 
+// 가까운 측정소 찾기
 export const getAirInfoStation = async (x: number, y: number) => {
 	console.log("xy !!??", x, y);
 
 	try {
 		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getAirInfoStation`, {
 			params: {
-				// serviceKey: SEOUL_BUS_API_KEY,
-				// returnType: "json",
 				tmX: x,
 				tmY: y,
 			},
 		});
-		console.log("!!here!!", response.data);
+		// console.log("!!here!!", response.data);
 
 		return response.data;
 	} catch (error) {
@@ -26,14 +25,9 @@ export const getAirInfoStation = async (x: number, y: number) => {
 // 측정소 기준 대기 정보
 export const getAirInfoByStation = async (stationName: string): Promise<AirInfoDataResponse> => {
 	try {
-		const response = await axios.get(`http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty`, {
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getAirInfoByStation`, {
 			params: {
-				serviceKey: SEOUL_BUS_API_KEY,
-				returnType: "json",
 				stationName: stationName,
-				dataTerm: "DAILY",
-				numOfRows: 1,
-				ver: "1.4", //pm25포함
 			},
 		});
 		return response.data.response.body;
