@@ -7,7 +7,8 @@ import { useEffect } from "react";
 import useGetAirInfoStation from "../../../hooks/useGetAirInfoStation";
 import useGetAirInfoByStation from "../../../hooks/useGetAirInfoByStation";
 import { useAirInfoStore } from "../../../stores/useAirInfoStore";
-import useGetUltraSrtNcst from "../../../hooks/useGetUltraSrtNcst";
+import { convertWGS84ToNxy } from "../../../utils/convertWGS84ToNxy";
+import useGetUltraSrtFcst from "../../../hooks/useGetUltraSrtFcst";
 
 const WeatherWr = styled("div")({
 	position: "absolute",
@@ -83,6 +84,7 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 			console.log("AirInfoStationData", AirInfoStationData.response.body.items[0].stationName);
 		}
 	}, [AirInfoStationData]);
+	// 가까운 측정소기준의 대기(미먼,초미먼) 상태 조회하기
 	const { data: airInfoData, isLoading: airInfoDataIsLoading } = useGetAirInfoByStation(AirInfoStationData?.response.body.items[0].stationName);
 	console.log("airInfoData", airInfoData?.items);
 	const { airInfo, setAirInfo } = useAirInfoStore();
@@ -93,7 +95,17 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 	}, [airInfoData, setAirInfo]);
 	console.log("!!!!!!!", airInfo);
 
-	const { data: ultraSrtData } = useGetUltraSrtNcst(location);
+	// WGS84 > 격자 좌표계 변환해서
+	const { nx, ny } = convertWGS84ToNxy(location);
+	console.log("convertWGS84ToNxy", nx, ny);
+
+	// base date, time 계산하기
+	const now = new Date();
+	const base_date = now.toISOString().slice(0, 10).replace(/-/g, "");
+	const base_time = String(now.getHours()).padStart(2, "0") + "00";
+
+	// 변환된 좌표를 이용하여 초단기실황 날씨 정보 조회
+	const { data: ultraSrtData } = useGetUltraSrtFcst({ nx, ny, base_date, base_time });
 	console.log("ultraSrtData", ultraSrtData);
 
 	if (isLoading || airInfoDataIsLoading) return <Loading />;
@@ -104,7 +116,7 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 			</BtnClose>
 			<WeatherBx>
 				<div>icon</div>
-				<p>15°</p>
+				{/* <p>{ultraSrtData && }℃</p> */}
 			</WeatherBx>
 			<AtmosphereBx>
 				<div>

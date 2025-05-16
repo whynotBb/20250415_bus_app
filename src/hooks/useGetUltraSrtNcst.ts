@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { ILocation } from "../models/map";
 import { getUltraSrtNcst } from "../apis/weatherApi";
+import { UltraSrtNcstReq } from "../models/weather";
 
-const useGetUltraSrtNcst = (location: ILocation) => {
+const useGetUltraSrtNcst = (params: UltraSrtNcstReq) => {
 	return useQuery({
-		queryKey: ["ultra-srt-ncst", location],
-		queryFn: () => getUltraSrtNcst(location),
+		queryKey: ["ultra-srt-ncst", params],
+		queryFn: () => getUltraSrtNcst(params),
 	});
 };
 export default useGetUltraSrtNcst;

@@ -1,7 +1,6 @@
 import axios from "axios";
-import { SEOUL_BUS_API_KEY } from "../configs/mapConfig";
 import { AirInfoDataResponse } from "../models/airInfo";
-import { ILocation } from "../models/map";
+import { UltraSrtFcstRes, UltraSrtNcstReq, UltraSrtNcstRes } from "../models/weather";
 
 // 가까운 측정소 찾기
 export const getAirInfoStation = async (x: number, y: number) => {
@@ -38,24 +37,41 @@ export const getAirInfoByStation = async (stationName: string): Promise<AirInfoD
 
 // 초단기 실황조회
 
-export const getUltraSrtNcst = async (location: ILocation) => {
+export const getUltraSrtNcst = async (params: UltraSrtNcstReq): Promise<UltraSrtNcstRes> => {
+	const { nx, ny, base_date, base_time } = params;
 	try {
-		const response = await axios.get(`http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst`, {
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getUltraSrtNcst`, {
 			params: {
-				serviceKey: SEOUL_BUS_API_KEY,
-				returnType: "json",
-				nx: location.latitude,
-				ny: location.longitude,
-				pageNo: "1",
-				numOfRows: "10",
-				base_date: "20250515",
-				base_time: "1700",
+				nx: nx,
+				ny: ny,
+				base_date: base_date,
+				base_time: base_time,
 			},
 		});
 		console.log(response.data);
 
-		return response.data;
+		return response.data.response;
 	} catch (error) {
 		throw new Error(`fail to fetch ultra srt ncst : ${error}`);
+	}
+};
+// 초단기 예보 조회
+
+export const getUltraSrtFcst = async (params: UltraSrtNcstReq): Promise<UltraSrtFcstRes> => {
+	const { nx, ny, base_date, base_time } = params;
+	try {
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getUltraSrtFcst`, {
+			params: {
+				nx: nx,
+				ny: ny,
+				base_date: base_date,
+				base_time: base_time,
+			},
+		});
+		console.log(response.data);
+
+		return response.data.response;
+	} catch (error) {
+		throw new Error(`fail to fetch ultra srt fcst : ${error}`);
 	}
 };
