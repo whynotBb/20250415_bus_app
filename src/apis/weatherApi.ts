@@ -7,15 +7,15 @@ export const getAirInfoStation = async (x: number, y: number) => {
 	console.log("xy !!??", x, y);
 
 	try {
-		const response = await axios.get(`http://apis.data.go.kr/B552584/MsrstnInfoInqireSvc/getNearbyMsrstnList`, {
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getAirInfoStation`, {
 			params: {
-				serviceKey: SEOUL_BUS_API_KEY,
-				returnType: "json",
+				// serviceKey: SEOUL_BUS_API_KEY,
+				// returnType: "json",
 				tmX: x,
 				tmY: y,
 			},
 		});
-		// console.log("json", response.data);
+		console.log("!!here!!", response.data);
 
 		return response.data;
 	} catch (error) {
