@@ -43,7 +43,7 @@ export interface UltraSrtFcstRes {
 				ny: number;
 				fcstDate: string;
 				fcstTime: string;
-				fcstValue: number;
+				fcstValue: string;
 			}[];
 		};
 		pageNo: number;
@@ -73,5 +73,5 @@ export interface UltraSrtFcstItem {
 	ny: number;
 	fcstDate: string;
 	fcstTime: string;
-	fcstValue: number;
+	fcstValue: string;
 }
