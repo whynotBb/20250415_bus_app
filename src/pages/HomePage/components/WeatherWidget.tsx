@@ -6,7 +6,7 @@ import Loading from "../../../common/components/Loading";
 import { useEffect } from "react";
 import useGetAirInfoStation from "../../../hooks/useGetAirInfoStation";
 import useGetAirInfoByStation from "../../../hooks/useGetAirInfoByStation";
-import { useAirInfoStore } from "../../../stores/useAirInfoStore";
+import { useAirInfoStationAddrStore, useAirInfoStore } from "../../../stores/useAirInfoStore";
 import { convertWGS84ToNxy } from "../../../utils/convertWGS84ToNxy";
 import useGetUltraSrtFcst from "../../../hooks/useGetUltraSrtFcst";
 import { useNavigate } from "react-router-dom";
@@ -153,9 +153,12 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 	console.log("TM 좌표", { x, y });
 	// tm 좌표를 이용하여 현위치에서 가까운 측정소 조회하기
 	const { data: AirInfoStationData, isLoading } = useGetAirInfoStation(x, y);
+	// 측정소 주소 저장(중기예보 조회를 위함)
+	const { setAirInfoStationAddr } = useAirInfoStationAddrStore();
 	useEffect(() => {
 		if (!isLoading) {
 			console.log("AirInfoStationData", AirInfoStationData.response.body.items[0].stationName);
+			setAirInfoStationAddr(AirInfoStationData.response.body.items[0].addr);
 		}
 	}, [AirInfoStationData]);
 	// 가까운 측정소기준의 대기(미먼,초미먼) 상태 조회하기

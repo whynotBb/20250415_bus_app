@@ -61,3 +61,8 @@
     --bg-300:#454e59;
 
 \*\* 배포 시 저작권 표시 해야함 open api
+
+-   weather icon
+    \*\* https://www.iconfinder.com/iconsets/weatherful
+
+*   https://www.iconfinder.com/search?q=weather&family=weather-forecast-icon-2
