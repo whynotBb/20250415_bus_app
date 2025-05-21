@@ -10,6 +10,8 @@ import { useAirInfoStore } from "../../../stores/useAirInfoStore";
 import { convertWGS84ToNxy } from "../../../utils/convertWGS84ToNxy";
 import useGetUltraSrtFcst from "../../../hooks/useGetUltraSrtFcst";
 import { useNavigate } from "react-router-dom";
+import useGetUltraSrtNcst from "../../../hooks/useGetUltraSrtNcst";
+import { useWeatherFcst, useWeatherNcst } from "../../../stores/useWeatherInfoStore";
 
 const WeatherWr = styled("div")({
 	position: "absolute",
@@ -181,9 +183,25 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 	if (hour < 0) hour = 23;
 	const base_time = String(hour).padStart(2, "0") + "30";
 
-	// 변환된 좌표를 이용하여 초단기실황 날씨 정보 조회
+	// 변환된 좌표를 이용하여 초단기예보 날씨 정보 조회
+	const { data: ultraSrtNcstData } = useGetUltraSrtNcst({ nx, ny, base_date, base_time });
 	const { data: ultraSrtData } = useGetUltraSrtFcst({ nx, ny, base_date, base_time });
-	console.log("ultraSrtData", ultraSrtData);
+	console.log("ultraSrtData", ultraSrtData, "ultraSrtNcstData : ", ultraSrtNcstData);
+
+	// 초단기 실황
+	const { setWeatherNcst } = useWeatherNcst();
+	useEffect(() => {
+		if (ultraSrtNcstData) {
+			setWeatherNcst(ultraSrtNcstData);
+		}
+	}, [ultraSrtNcstData, setWeatherNcst]);
+	// 초단기 예보
+	const { setWeatherFcst } = useWeatherFcst();
+	useEffect(() => {
+		if (ultraSrtData) {
+			setWeatherFcst(ultraSrtData);
+		}
+	}, [ultraSrtData, setWeatherFcst]);
 
 	if (isLoading || airInfoDataIsLoading) return <Loading />;
 	return (
@@ -201,7 +219,7 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 					<SkyIcon className={`pty pty_${ultraSrtData && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue}`} />
 				)}
 
-				<p>{ultraSrtData && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "T1H")?.fcstValue}℃</p>
+				<p>{ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && ultraSrtNcstData.body.items.item?.find((item) => item.category === "T1H")?.obsrValue}℃</p>
 			</WeatherBx>
 			<AtmosphereBx>
 				<div>
