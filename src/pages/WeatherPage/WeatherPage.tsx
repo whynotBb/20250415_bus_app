@@ -1,6 +1,8 @@
-import { useAirInfoStationAddrStore, useAirInfoStore } from "../../stores/useAirInfoStore";
+import { styled, Typography } from "@mui/material";
+import { useAirInfoStore } from "../../stores/useAirInfoStore";
 import { useWeatherFcst, useWeatherNcst } from "../../stores/useWeatherInfoStore";
-
+import { useCurrentLocationStore } from "../../stores/useCurrentLocationStore";
+const RegionTxt = styled(Typography)({});
 const WeatherPage = () => {
 	const { airInfo } = useAirInfoStore();
 	console.log("WeatherPage - air info", airInfo);
@@ -9,11 +11,16 @@ const WeatherPage = () => {
 	const { weatherFcstData } = useWeatherFcst();
 	console.log("weatherFcstData", weatherFcstData);
 
-	// 측정소 정보 가져와서 행정구역 추출하기
-	const { airInfoStationAddr } = useAirInfoStationAddrStore();
-	console.log("airInfoStationAddr", airInfoStationAddr?.split(" ")[0]);
+	// 좌표 기준으로 주소 변환 : kakao : coord2address
+	// 현위치 좌표 store 에서 가져오기
+	const { currentLocation } = useCurrentLocationStore();
+	console.log("현위치 좌표 store 에서 가져오기", currentLocation?.latitude, currentLocation?.longitude);
 
-	return <div></div>;
+	return (
+		<div>
+			<RegionTxt></RegionTxt>
+		</div>
+	);
 };
 
 export default WeatherPage;

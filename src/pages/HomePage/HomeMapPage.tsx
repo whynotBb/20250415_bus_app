@@ -16,6 +16,7 @@ import { Point } from "ol/geom";
 import CircleStyle from "ol/style/Circle";
 import { Fill, Style } from "ol/style";
 import WeatherWidget from "./components/WeatherWidget";
+import { useCurrentLocationStore } from "../../stores/useCurrentLocationStore";
 
 const vworld_api_key = import.meta.env.VITE_VWORLD_API_KEY;
 
@@ -32,6 +33,15 @@ const HomeMapPage = ({ openBusDetail }: { openBusDetail: (busDetailInfo: Station
 	const defaultCoords: [number, number] = [126.9783785, 37.5666612]; // 서울시청
 	// 현재위치 가져오기
 	const { location } = useGeoLocation(geolocationOptions);
+	// 현재 위치 store 에 저장
+	const { setCurrentLocation } = useCurrentLocationStore();
+	useEffect(() => {
+		if (location) {
+			console.log("here!!", location);
+
+			setCurrentLocation(location);
+		}
+	}, [location]);
 	const [mapLocation, setMapLocation] = useState<ILocation>();
 
 	const mapRef = useRef<HTMLDivElement>(null);

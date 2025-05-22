@@ -6,7 +6,7 @@ import Loading from "../../../common/components/Loading";
 import { useEffect } from "react";
 import useGetAirInfoStation from "../../../hooks/useGetAirInfoStation";
 import useGetAirInfoByStation from "../../../hooks/useGetAirInfoByStation";
-import { useAirInfoStationAddrStore, useAirInfoStore } from "../../../stores/useAirInfoStore";
+import { useAirInfoStore } from "../../../stores/useAirInfoStore";
 import { convertWGS84ToNxy } from "../../../utils/convertWGS84ToNxy";
 import useGetUltraSrtFcst from "../../../hooks/useGetUltraSrtFcst";
 import { useNavigate } from "react-router-dom";
@@ -126,7 +126,11 @@ const SkyIcon = styled("div")({
 	},
 });
 
-//미세먼지 grade에 따른 txt 변환
+/**
+ * 미세먼지 grade에 따른 텍스트 변환하여 반환하는 함수
+ * @param grade 미세먼지 grade 숫자(string타입)
+ * @returns
+ */
 const airInfoTxt = (grade: string) => {
 	switch (grade) {
 		case "1":
@@ -154,13 +158,15 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 	// tm 좌표를 이용하여 현위치에서 가까운 측정소 조회하기
 	const { data: AirInfoStationData, isLoading } = useGetAirInfoStation(x, y);
 	// 측정소 주소 저장(중기예보 조회를 위함)
-	const { setAirInfoStationAddr } = useAirInfoStationAddrStore();
-	useEffect(() => {
-		if (!isLoading) {
-			console.log("AirInfoStationData", AirInfoStationData.response.body.items[0].stationName);
-			setAirInfoStationAddr(AirInfoStationData.response.body.items[0].addr);
-		}
-	}, [AirInfoStationData]);
+	// → 현위치 좌표 > 주소 변환할 예정으로 아래 코드 제거
+	// const { setAirInfoStationAddr } = useAirInfoStationAddrStore();
+	// useEffect(() => {
+	// 	if (!isLoading) {
+	// 		console.log("AirInfoStationData", AirInfoStationData.response.body.items[0].stationName);
+	// 		setAirInfoStationAddr(AirInfoStationData.response.body.items[0].addr);
+	// 	}
+	// }, [AirInfoStationData]);
+
 	// 가까운 측정소기준의 대기(미먼,초미먼) 상태 조회하기
 	const { data: airInfoData, isLoading: airInfoDataIsLoading } = useGetAirInfoByStation(AirInfoStationData?.response.body.items[0].stationName);
 	console.log("airInfoData", airInfoData?.items);
@@ -181,13 +187,20 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 
 	const base_date = now.toISOString().slice(0, 10).replace(/-/g, "");
 
+	// base_time : 30분 단위
 	let hour = now.getMinutes() >= 30 ? now.getHours() : now.getHours() - 1;
 	// 자정(0시)일 때 hour가 -1이 되지 않도록 보정
 	if (hour < 0) hour = 23;
 	const base_time = String(hour).padStart(2, "0") + "30";
 
+	// base_time_10 : 10분 단위 (단기실황)
+	hour = now.getMinutes() >= 10 ? now.getHours() : now.getHours() - 1;
+	// 자정(0시)일 때 hour가 -1이 되지 않도록 보정
+	if (hour < 0) hour = 23;
+	const base_time_10 = String(hour).padStart(2, "0") + "00";
+
 	// 변환된 좌표를 이용하여 초단기예보 날씨 정보 조회
-	const { data: ultraSrtNcstData } = useGetUltraSrtNcst({ nx, ny, base_date, base_time });
+	const { data: ultraSrtNcstData } = useGetUltraSrtNcst({ nx, ny, base_date, base_time: base_time_10 });
 	const { data: ultraSrtData } = useGetUltraSrtFcst({ nx, ny, base_date, base_time });
 	console.log("ultraSrtData", ultraSrtData, "ultraSrtNcstData : ", ultraSrtNcstData);
 

@@ -5,7 +5,11 @@ interface NxNy {
 	ny: number;
 }
 
-// 좌표 변환 함수
+/**
+ * WGS84 → 격자 좌표 변환 함수
+ * @param location
+ * @returns
+ */
 export const convertWGS84ToNxy = (location: ILocation): NxNy => {
 	const RE = 6371.00877; // 지구 반경(km)
 	const GRID = 5.0; // 격자 간격(km)
