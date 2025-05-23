@@ -1,32 +1,30 @@
 import { Box, styled, Typography } from "@mui/material";
-import { useAirInfoStore } from "../../stores/useAirInfoStore";
-import { useWeatherFcst, useWeatherNcst } from "../../stores/useWeatherInfoStore";
-import { useCurrentLocationStore } from "../../stores/useCurrentLocationStore";
 import useGetCoordToAddr from "../../hooks/useGetCoorToAddr";
+import { useGeoLocation } from "../../hooks/useGeoLocation";
+import TodayWeather from "./components/TodayWeather";
 
-const WeatherPageWr = styled(Box)({
-	padding: "20px",
-});
-const RegionTxt = styled(Typography)({});
+const WeatherPageWr = styled(Box)({});
+const RegionTxt = styled(Typography)({ padding: "20px" });
+
+const geolocationOptions = {
+	enableHighAccuracy: true,
+	timeout: 1000 * 10,
+	maximumAge: 1000 * 3600 * 24,
+};
 const WeatherPage = () => {
-	const { airInfo } = useAirInfoStore();
-	console.log("WeatherPage - air info", airInfo);
-	const { weatherNcstData } = useWeatherNcst();
-	console.log("weatherNcstData", weatherNcstData);
-	const { weatherFcstData } = useWeatherFcst();
-	console.log("weatherFcstData", weatherFcstData);
+	// 현재위치 가져오기
+	const { location } = useGeoLocation(geolocationOptions);
+	console.log("weatherPage : coord", location);
 
 	// 좌표 기준으로 주소 변환 : kakao : coord2address
-	// 현위치 좌표 store 에서 가져오기
-	const { currentLocation } = useCurrentLocationStore();
-	console.log("현위치 좌표 store 에서 가져오기", currentLocation?.latitude, currentLocation?.longitude);
-	// currentLocation 값이 null 이 아닐때 호출하도록 수정
-	const { data: currentAddr } = useGetCoordToAddr(currentLocation);
+	// location 값이 undefined 이 아닐때 호출하도록 수정
+	const { data: currentAddr, isLoading: currentAddrLoading } = useGetCoordToAddr(location);
+	console.log("kakao 주소 변환 결과", currentAddrLoading, currentAddr);
 
-	console.log("kakao 주소 변환 결과", currentAddr);
 	return (
 		<WeatherPageWr>
-			<RegionTxt>{`${currentAddr?.documents[0].address.region_2depth_name} ${currentAddr?.documents[0].address.region_3depth_name}`}</RegionTxt>
+			{currentAddr !== undefined && <RegionTxt>{`${currentAddr.documents[0].address.region_2depth_name} ${currentAddr?.documents[0].address.region_3depth_name}`}</RegionTxt>}
+			{location !== undefined && <TodayWeather location={location} />}
 		</WeatherPageWr>
 	);
 };

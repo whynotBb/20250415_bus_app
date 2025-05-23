@@ -81,7 +81,8 @@ export const getUltraSrtFcst = async (params: UltraSrtNcstReq): Promise<UltraSrt
  * x,y 좌표를 주소로 변환하는 api(kakao)
  * @param location
  */
-export const getCoordToAddr = async (location: ILocation | null): Promise<CoordToAddrRes> => {
+export const getCoordToAddr = async (location: ILocation | undefined): Promise<CoordToAddrRes> => {
+	console.log("getCoordToAddr : location", location);
 	if (!location) {
 		throw new Error("Location is null. Cannot convert coordinates to address.");
 	}

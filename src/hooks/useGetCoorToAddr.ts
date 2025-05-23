@@ -7,7 +7,9 @@ import { getCoordToAddr } from "../apis/weatherApi";
  * @param location
  * @returns
  */
-const useGetCoordToAddr = (location: ILocation | null) => {
+const useGetCoordToAddr = (location: ILocation | undefined) => {
+	console.log("useGetCoordToAddr : location", location);
+
 	return useQuery({
 		queryKey: ["coord-to-addr", location],
 		queryFn: () => getCoordToAddr(location!),

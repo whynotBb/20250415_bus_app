@@ -12,6 +12,7 @@ import useGetUltraSrtFcst from "../../../hooks/useGetUltraSrtFcst";
 import { useNavigate } from "react-router-dom";
 import useGetUltraSrtNcst from "../../../hooks/useGetUltraSrtNcst";
 import { useWeatherFcst, useWeatherNcst } from "../../../stores/useWeatherInfoStore";
+import AtmosphereBx from "../../../common/components/AtmosphereBx";
 
 const WeatherWr = styled("div")({
 	position: "absolute",
@@ -32,49 +33,7 @@ const WeatherWr = styled("div")({
 	cursor: "pointer",
 });
 const WeatherBx = styled("div")({});
-const AtmosphereBx = styled("div")({
-	display: "flex",
-	// flexDirection: "column",
-	gap: "10px",
-	fontSize: "12px",
-});
-const AirGradeBar = styled("span")({
-	display: "flex",
-	alignItems: "center",
-	gap: "2px",
-	fontSize: "13px",
-	"&:before": {
-		content: '""',
-		width: "8px",
-		height: "8px",
-		background: "#ddd",
-		borderRadius: "50%",
-	},
-	"&.airGrade_1": {
-		color: "#64A8FF",
-		"&:before": {
-			background: "#64A8FF",
-		},
-	},
-	"&.airGrade_2": {
-		color: "#6ED6A0",
-		"&:before": {
-			background: "#6ED6A0",
-		},
-	},
-	"&.airGrade_3": {
-		color: "#FFD966",
-		"&:before": {
-			background: "#FFD966",
-		},
-	},
-	"&.airGrade_4": {
-		color: "#FF6B6B",
-		"&:before": {
-			background: "#FF6B6B",
-		},
-	},
-});
+
 // const BtnClose = styled("button")(({ theme }) => ({
 // 	position: "absolute",
 // 	width: "20px",
@@ -125,26 +84,6 @@ const SkyIcon = styled("div")({
 		backgroundImage: "url(/assets/weather_snow.svg)",
 	},
 });
-
-/**
- * 미세먼지 grade에 따른 텍스트 변환하여 반환하는 함수
- * @param grade 미세먼지 grade 숫자(string타입)
- * @returns
- */
-const airInfoTxt = (grade: string) => {
-	switch (grade) {
-		case "1":
-			return "좋음";
-		case "2":
-			return "보통";
-		case "3":
-			return "나쁨";
-		case "4":
-			return "매우나쁨";
-		default:
-			return "";
-	}
-};
 
 const WeatherWidget = ({ location }: { location: ILocation }) => {
 	const navigate = useNavigate();
@@ -229,7 +168,7 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 				{/* sky case
 				1. sky : 맑음(1), 구름많음(3), 흐림(4)
 				2. 강수 PTY : 없음(0), 비(1), 비/눈(2), 눈(3), 빗방울(5), 빗방울눈날림(6), 눈날림(7)  */}
-				{ultraSrtData && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue === "0" ? (
+				{ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue === "0" ? (
 					<SkyIcon className={`sky sky_${ultraSrtData && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "SKY")?.fcstValue}`} />
 				) : (
 					<SkyIcon className={`pty pty_${ultraSrtData && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue}`} />
@@ -237,16 +176,7 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 
 				<p>{`${ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && ultraSrtNcstData.body.items.item?.find((item) => item.category === "T1H")?.obsrValue}℃`}</p>
 			</WeatherBx>
-			<AtmosphereBx>
-				<div>
-					<p>미세</p>
-					<AirGradeBar className={`airGrade_${airInfo?.items ? airInfo.items[0].pm10Grade : 0}`}>{airInfoTxt(airInfo?.items ? airInfo.items[0].pm10Grade : "0")}</AirGradeBar>
-				</div>
-				<div>
-					<p>초미세</p>
-					<AirGradeBar className={`airGrade_${airInfo?.items ? airInfo.items[0].pm25Grade : 0}`}>{airInfoTxt(airInfo?.items && airInfo.items[0].pm25Grade ? airInfo.items[0].pm25Grade : "0")}</AirGradeBar>
-				</div>
-			</AtmosphereBx>
+			{airInfo && <AtmosphereBx airInfo={airInfo} />}
 		</WeatherWr>
 	);
 };
