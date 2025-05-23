@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AirInfoDataResponse } from "../models/airInfo";
-import { UltraSrtFcstRes, UltraSrtNcstReq, UltraSrtNcstRes } from "../models/weather";
-
+import { CoordToAddrRes, UltraSrtFcstRes, UltraSrtNcstReq, UltraSrtNcstRes } from "../models/weather";
+import { ILocation } from "../models/map";
 // 가까운 측정소 찾기
 export const getAirInfoStation = async (x: number, y: number) => {
 	console.log("xy !!??", x, y);
@@ -55,6 +55,7 @@ export const getUltraSrtNcst = async (params: UltraSrtNcstReq): Promise<UltraSrt
 		throw new Error(`fail to fetch ultra srt ncst : ${error}`);
 	}
 };
+
 // 초단기 예보 조회
 
 export const getUltraSrtFcst = async (params: UltraSrtNcstReq): Promise<UltraSrtFcstRes> => {
@@ -73,5 +74,27 @@ export const getUltraSrtFcst = async (params: UltraSrtNcstReq): Promise<UltraSrt
 		return response.data.response;
 	} catch (error) {
 		throw new Error(`fail to fetch ultra srt fcst : ${error}`);
+	}
+};
+
+/**
+ * x,y 좌표를 주소로 변환하는 api(kakao)
+ * @param location
+ */
+export const getCoordToAddr = async (location: ILocation | null): Promise<CoordToAddrRes> => {
+	if (!location) {
+		throw new Error("Location is null. Cannot convert coordinates to address.");
+	}
+	try {
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getCoordToAddr`, {
+			params: {
+				x: location.longitude,
+				y: location.latitude,
+			},
+		});
+
+		return response.data;
+	} catch (error) {
+		throw new Error(`fail to coord to Address : ${error}`);
 	}
 };

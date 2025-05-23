@@ -1,5 +1,5 @@
 export type ILocation = {
-	latitude: number; // x
+	latitude: number;
 	longitude: number;
 };
 export type LocationByCurrent = {

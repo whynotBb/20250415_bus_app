@@ -104,7 +104,7 @@ const SkyIcon = styled("div")({
 	backgroundRepeat: "no-repeat",
 	backgroundPosition: "center",
 	backgroundSize: "100%",
-	backgroundImage: "url(/assets/weather_sunny.svg)",
+	// backgroundImage: "url(/assets/weather_sunny.svg)",
 
 	"&.sky_1": {
 		backgroundImage: "url(/assets/weather_sunny.svg)",
@@ -235,7 +235,7 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 					<SkyIcon className={`pty pty_${ultraSrtData && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue}`} />
 				)}
 
-				<p>{ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && ultraSrtNcstData.body.items.item?.find((item) => item.category === "T1H")?.obsrValue}℃</p>
+				<p>{`${ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && ultraSrtNcstData.body.items.item?.find((item) => item.category === "T1H")?.obsrValue}℃`}</p>
 			</WeatherBx>
 			<AtmosphereBx>
 				<div>
