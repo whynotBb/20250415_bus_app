@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import useGetUltraSrtNcst from "../../../hooks/useGetUltraSrtNcst";
 import { useWeatherFcst, useWeatherNcst } from "../../../stores/useWeatherInfoStore";
 import AtmosphereBx from "../../../common/components/AtmosphereBx";
+import SkyIconBx from "../../../common/components/SkyIconBx";
 
 const WeatherWr = styled("div")({
 	position: "absolute",
@@ -33,26 +34,6 @@ const WeatherWr = styled("div")({
 	cursor: "pointer",
 });
 const WeatherBx = styled("div")({});
-
-// const BtnClose = styled("button")(({ theme }) => ({
-// 	position: "absolute",
-// 	width: "20px",
-// 	height: "20px",
-// 	top: "-10px",
-// 	right: "-10px",
-// 	background: "rgba(255,255,255,.8)",
-// 	boxShadow: "1px 1px 6px 2px rgba(0, 0, 0, .1)",
-// 	border: "1px solid #ddd",
-// 	borderRadius: "50%",
-// 	display: "flex",
-// 	alignItems: "center",
-// 	justifyContent: "center",
-// 	cursor: "pointer",
-// 	svg: {
-// 		width: "12px",
-// 		color: theme.palette.primary.main,
-// 	},
-// }));
 
 // sky case
 // 1. sky : 맑음(1), 구름많음(3), 흐림(4)
@@ -169,10 +150,11 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 				1. sky : 맑음(1), 구름많음(3), 흐림(4)
 				2. 강수 PTY : 없음(0), 비(1), 비/눈(2), 눈(3), 빗방울(5), 빗방울눈날림(6), 눈날림(7)  */}
 				{ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue === "0" ? (
-					<SkyIcon className={`sky sky_${ultraSrtData && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "SKY")?.fcstValue}`} />
+					<SkyIcon className={`sky sky_${ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "SKY")?.fcstValue}`} />
 				) : (
-					<SkyIcon className={`pty pty_${ultraSrtData && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue}`} />
+					<SkyIcon className={`pty pty_${ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue}`} />
 				)}
+				{ultraSrtData !== undefined && <SkyIconBx ultraSrtData={ultraSrtData} />}
 
 				<p>{`${ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && ultraSrtNcstData.body.items.item?.find((item) => item.category === "T1H")?.obsrValue}℃`}</p>
 			</WeatherBx>

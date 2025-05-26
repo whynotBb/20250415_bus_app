@@ -10,8 +10,35 @@ import { airInfoGradeToTxt } from "../../../utils/airInfoGradeToTxt";
 import { convertWGS84ToNxy } from "../../../utils/convertWGS84ToNxy";
 import useGetUltraSrtNcst from "../../../hooks/useGetUltraSrtNcst";
 import useGetUltraSrtFcst from "../../../hooks/useGetUltraSrtFcst";
+import { vecToTxt } from "../../../utils/weatherConvert";
+import SkyIconBx from "../../../common/components/SkyIconBx";
 
 const TodayWeatherWr = styled(Box)({});
+const TodayBx = styled(Grid)({
+	".sky_icon": {
+		width: "100px",
+		height: "100px",
+		position: "relative",
+		textAlign: "center",
+		paddingTop: "45px",
+		".sky": {
+			position: "absolute",
+			top: "4px",
+			left: "4px",
+			width: "50px",
+			height: "50px",
+		},
+		b: {
+			fontSize: "26px",
+		},
+	},
+	ul: {
+		fontSize: "14px",
+		display: "flex",
+		alignItems: "center",
+		gap: "4px",
+	},
+});
 const WeatherDetailSlider = styled("div")({
 	".swiper": {
 		padding: "0 20px",
@@ -22,10 +49,20 @@ const WeatherDetailSlider = styled("div")({
 });
 const Item = styled(Paper)({
 	// border: "1px solid #fff",
-	padding: "10px",
+	padding: "10px 14px",
 	boxShadow: "none",
+	fontSize: "15px",
+	height: "65px",
+	boxSizing: "border-box",
+	small: {
+		fontWeight: "400",
+	},
 	".atmosphere_bx": {
+		p: {
+			fontSize: "15px",
+		},
 		flexDirection: "column",
+		gap: "0",
 		div: {
 			display: "flex",
 			alignItems: "center",
@@ -34,6 +71,44 @@ const Item = styled(Paper)({
 		},
 	},
 	".atmosphere_bx div": {},
+});
+const O3GradeTxt = styled("span")({
+	display: "inline-flex",
+	alignItems: "center",
+	gap: "2px",
+	fontSize: "13px",
+	marginLeft: "6px",
+	"&:before": {
+		content: '""',
+		width: "8px",
+		height: "8px",
+		background: "#ddd",
+		borderRadius: "50%",
+	},
+	"&.airGrade_1": {
+		color: "#64A8FF",
+		"&:before": {
+			background: "#64A8FF",
+		},
+	},
+	"&.airGrade_2": {
+		color: "#6ED6A0",
+		"&:before": {
+			background: "#6ED6A0",
+		},
+	},
+	"&.airGrade_3": {
+		color: "#FFD966",
+		"&:before": {
+			background: "#FFD966",
+		},
+	},
+	"&.airGrade_4": {
+		color: "#FF6B6B",
+		"&:before": {
+			background: "#FF6B6B",
+		},
+	},
 });
 const TodayWeather = ({ location }: { location: ILocation }) => {
 	/**
@@ -81,7 +156,24 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 	return (
 		<TodayWeatherWr>
 			<Grid container padding={"10px 20px"}>
-				<Grid size={8}>TodayWeather</Grid>
+				<TodayBx size={8}>
+					<div className="sky_icon">
+						{ultraSrtData !== undefined && <SkyIconBx ultraSrtData={ultraSrtData} />}
+						<b>
+							{ultraSrtNcstData !== undefined && ultraSrtNcstData.body.items.item.find((item) => item.category === "T1H")?.obsrValue}
+							<small>℃</small>
+						</b>
+					</div>
+
+					<ul>
+						{ultraSrtData !== undefined && <li>{ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue === "0" ? ultraSrtData.body.items.item.find((item) => item.category === "SKY")?.fcstValue : ultraSrtData !== undefined && ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue}</li>}
+						<li>어제보다 1.7˚ ↓↑</li>
+					</ul>
+					<ul>
+						<li>최저 13˚</li>
+						<li>최고 26˚</li>
+					</ul>
+				</TodayBx>
 				<Grid size={4}>tomorrowWeather</Grid>
 			</Grid>
 			<WeatherDetailSlider>
@@ -89,30 +181,22 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 					<SwiperSlide>
 						<Item>{airInfoData && <AtmosphereBx airInfo={airInfoData} />}</Item>
 					</SwiperSlide>
-					<SwiperSlide>
-						<Item>
-							<span>자외선지수</span>
-							{airInfoData && (
-								<p>
-									<b>{airInfoData?.items ? airInfoData?.items[0].o3Value : ""}</b>
-									{airInfoGradeToTxt(airInfoData?.items ? airInfoData?.items[0].o3Grade : "")}
-								</p>
-							)}
-						</Item>
-					</SwiperSlide>
+
 					<SwiperSlide>
 						<Item>
 							<span>습도</span>
 							<p>
-								<b>30</b>%
+								<b>{`${ultraSrtNcstData !== undefined && ultraSrtNcstData.body.items.item?.find((Item) => Item.category === "REH")?.obsrValue}`}</b>
+								<small>%</small>
 							</p>
 						</Item>
 					</SwiperSlide>
 					<SwiperSlide>
 						<Item>
-							<span>바람</span>
+							<span>{ultraSrtNcstData !== undefined && vecToTxt(ultraSrtNcstData.body.items.item?.find((item) => item.category === "VEC")?.obsrValue)}</span>
 							<p>
-								<b>1.4</b>m/s
+								<b>{ultraSrtNcstData !== undefined && ultraSrtNcstData.body.items.item?.find((item) => item.category === "WSD")?.obsrValue}</b>
+								<small>m/s</small>
 							</p>
 						</Item>
 					</SwiperSlide>
@@ -124,6 +208,20 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 							<p>
 								<span>일몰</span>19:17
 							</p>
+						</Item>
+					</SwiperSlide>
+					<SwiperSlide>
+						<Item>
+							<span>오존지수</span>
+							{airInfoData && (
+								<p>
+									<b>
+										{airInfoData?.items ? airInfoData?.items[0].o3Value : ""}
+										<small>ppm</small>
+									</b>
+									<O3GradeTxt className={`airGrade_${airInfoData?.items ? airInfoData?.items[0].o3Grade : ""}`}>{airInfoGradeToTxt(airInfoData?.items ? airInfoData?.items[0].o3Grade : "")}</O3GradeTxt>
+								</p>
+							)}
 						</Item>
 					</SwiperSlide>
 				</Swiper>
