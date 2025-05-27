@@ -49,7 +49,6 @@ export const getUltraSrtNcst = async (params: UltraSrtNcstReq): Promise<UltraSrt
 			},
 		});
 		console.log(response.data);
-
 		return response.data.response;
 	} catch (error) {
 		throw new Error(`fail to fetch ultra srt ncst : ${error}`);
