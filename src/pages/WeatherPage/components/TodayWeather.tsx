@@ -1,17 +1,16 @@
-import { Box, Grid, Paper, styled } from "@mui/material";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "../../../../node_modules/swiper/swiper.css";
+import { Box, Grid, styled } from "@mui/material";
 import { ILocation } from "../../../models/map";
 import useGetAirInfoStation from "../../../hooks/useGetAirInfoStation";
 import { convertWGS84ToTM } from "../../../utils/convertWGS84ToTM";
 import useGetAirInfoByStation from "../../../hooks/useGetAirInfoByStation";
-import AtmosphereBx from "../../../common/components/AtmosphereBx";
-import { airInfoGradeToTxt } from "../../../utils/airInfoGradeToTxt";
 import { convertWGS84ToNxy } from "../../../utils/convertWGS84ToNxy";
 import useGetUltraSrtNcst from "../../../hooks/useGetUltraSrtNcst";
 import useGetUltraSrtFcst from "../../../hooks/useGetUltraSrtFcst";
-import { vecToTxt } from "../../../utils/weatherConvert";
+import { getValueByCategory, vilageBaseTime } from "../../../utils/weatherConvert";
 import SkyIconBx from "../../../common/components/SkyIconBx";
+import useGetVilageFcst from "../../../hooks/useGetVilageFcst";
+import TodayWeatherDetailSlider from "./TodayWeatherDetailSlider";
+import { UltraSrtNcstRes } from "../../../models/weather";
 
 const TodayWeatherWr = styled(Box)({});
 const TodayBx = styled(Grid)({
@@ -39,77 +38,40 @@ const TodayBx = styled(Grid)({
 		gap: "4px",
 	},
 });
-const WeatherDetailSlider = styled("div")({
-	".swiper": {
-		padding: "0 20px",
-	},
-	".swiper-slide": {
-		width: "auto",
-	},
-});
-const Item = styled(Paper)({
-	// border: "1px solid #fff",
-	padding: "10px 14px",
-	boxShadow: "none",
-	fontSize: "15px",
-	height: "65px",
-	boxSizing: "border-box",
-	small: {
-		fontWeight: "400",
-	},
-	".atmosphere_bx": {
-		p: {
-			fontSize: "15px",
-		},
-		flexDirection: "column",
-		gap: "0",
-		div: {
-			display: "flex",
-			alignItems: "center",
-			justifyContent: "space-between",
-			gap: "5px",
-		},
-	},
-	".atmosphere_bx div": {},
-});
-const O3GradeTxt = styled("span")({
-	display: "inline-flex",
-	alignItems: "center",
-	gap: "2px",
-	fontSize: "13px",
-	marginLeft: "6px",
-	"&:before": {
-		content: '""',
-		width: "8px",
-		height: "8px",
-		background: "#ddd",
-		borderRadius: "50%",
-	},
-	"&.airGrade_1": {
-		color: "#64A8FF",
-		"&:before": {
-			background: "#64A8FF",
-		},
-	},
-	"&.airGrade_2": {
-		color: "#6ED6A0",
-		"&:before": {
-			background: "#6ED6A0",
-		},
-	},
-	"&.airGrade_3": {
-		color: "#FFD966",
-		"&:before": {
-			background: "#FFD966",
-		},
-	},
-	"&.airGrade_4": {
-		color: "#FF6B6B",
-		"&:before": {
-			background: "#FF6B6B",
-		},
-	},
-});
+
+/**
+ * 오늘 기온 - 어제 기온 : 온도 / 화살표 up, down 표기
+ * @param todayData
+ * @param yesterdayData
+ * @returns
+ */
+const renderTempDiff = (todayData: UltraSrtNcstRes, yesterdayData: UltraSrtNcstRes) => {
+	const today = Number(getValueByCategory(todayData, "T1H"));
+	const yesterday = Number(getValueByCategory(yesterdayData, "T1H"));
+
+	if (today === null || yesterday === null) return null;
+
+	const diff = today - yesterday;
+	const absDiff = Math.abs(diff).toFixed(1); // 소수 1자리
+
+	let className = "";
+	let arrow = "→";
+
+	if (diff > 0) {
+		className = "up";
+		arrow = "↑";
+	} else if (diff < 0) {
+		className = "down";
+		arrow = "↓";
+	}
+
+	return (
+		<li className={className}>
+			어제보다 {absDiff}˚ {arrow}
+		</li>
+	);
+};
+
 const TodayWeather = ({ location }: { location: ILocation }) => {
 	/**
 	 * 대기(미세먼지,초미세먼지,오존) 상태 조회하기
@@ -130,7 +92,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 	 * 날씨 단기 실황 조회
 	 * WGS84 > 격자 좌표계 변환
 	 * base date, time 계산하기
-	 * 변환된 좌표를 이용하여 초단기예보 날씨 정보 조회
+	 * 변환된 좌표를 이용하여 초단기실황, 초단기예보, 단기예보 날씨 정보 조회
 	 */
 	// WGS84 > 격자 좌표계 변환해서
 	const { nx, ny } = convertWGS84ToNxy(location);
@@ -148,11 +110,25 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 	// 자정(0시)일 때 hour가 -1이 되지 않도록 보정
 	if (hour < 0) hour = 23;
 	const base_time_10 = String(hour).padStart(2, "0") + "00";
+	const vilage_base_time = String(vilageBaseTime(hour)).padStart(2, "0") + "00";
+	console.log("vilage_base_time 계산", vilage_base_time);
 
-	// 변환된 좌표를 이용하여 초단기예보 날씨 정보 조회
+	// 어제 온도와 비교를 위해 어제 + 1시간 후(제공 데이터가 최대 23시간임) base date, time 계산하기
+	const yesterday = new Date(now);
+	yesterday.setDate(now.getDate() - 1);
+	const y_base_date = yesterday.toISOString().slice(0, 10).replace(/-/g, "");
+	const y_base_time_10 = String(hour + 2).padStart(2, "0") + "00";
+
+	// 변환된 좌표를 이용하여 초단기실황, 초단기예보, 단기예보 날씨 정보 조회
 	const { data: ultraSrtNcstData } = useGetUltraSrtNcst({ nx, ny, base_date, base_time: base_time_10 });
+	const { data: yesterdayUltraSrtNcstData } = useGetUltraSrtNcst({ nx, ny, base_date: y_base_date, base_time: y_base_time_10 });
 	const { data: ultraSrtData } = useGetUltraSrtFcst({ nx, ny, base_date, base_time });
-	console.log("ultraSrtData", ultraSrtData, "ultraSrtNcstData : ", ultraSrtNcstData);
+
+	// TODO : 0~1시일 경우 base_date 하루 전으로 예외처리 필요
+	const { data: vilageFcstData } = useGetVilageFcst({ nx, ny, base_date, base_time: vilage_base_time });
+	console.log("ultraSrtData", ultraSrtData, "ultraSrtNcstData : ", ultraSrtNcstData, "vilageFcstData : ", vilageFcstData);
+	console.log("yesterday", y_base_date, y_base_time_10, yesterdayUltraSrtNcstData);
+
 	return (
 		<TodayWeatherWr>
 			<Grid container padding={"10px 20px"}>
@@ -160,14 +136,14 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 					<div className="sky_icon">
 						{ultraSrtData !== undefined && <SkyIconBx ultraSrtData={ultraSrtData} />}
 						<b>
-							{ultraSrtNcstData !== undefined && ultraSrtNcstData.body.items.item.find((item) => item.category === "T1H")?.obsrValue}
+							{ultraSrtNcstData && getValueByCategory(ultraSrtNcstData, "T1H")}
 							<small>℃</small>
 						</b>
 					</div>
 
 					<ul>
 						{ultraSrtData !== undefined && <li>{ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue === "0" ? ultraSrtData.body.items.item.find((item) => item.category === "SKY")?.fcstValue : ultraSrtData !== undefined && ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue}</li>}
-						<li>어제보다 1.7˚ ↓↑</li>
+						{yesterdayUltraSrtNcstData && ultraSrtNcstData && renderTempDiff(ultraSrtNcstData, yesterdayUltraSrtNcstData)}
 					</ul>
 					<ul>
 						<li>최저 13˚</li>
@@ -176,56 +152,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 				</TodayBx>
 				<Grid size={4}>tomorrowWeather</Grid>
 			</Grid>
-			<WeatherDetailSlider>
-				<Swiper spaceBetween={10} slidesPerView={"auto"} onSlideChange={() => console.log("slide change")} onSwiper={(swiper) => console.log(swiper)}>
-					<SwiperSlide>
-						<Item>{airInfoData && <AtmosphereBx airInfo={airInfoData} />}</Item>
-					</SwiperSlide>
-
-					<SwiperSlide>
-						<Item>
-							<span>습도</span>
-							<p>
-								<b>{`${ultraSrtNcstData !== undefined && ultraSrtNcstData.body.items.item?.find((Item) => Item.category === "REH")?.obsrValue}`}</b>
-								<small>%</small>
-							</p>
-						</Item>
-					</SwiperSlide>
-					<SwiperSlide>
-						<Item>
-							<span>{ultraSrtNcstData !== undefined && vecToTxt(ultraSrtNcstData.body.items.item?.find((item) => item.category === "VEC")?.obsrValue)}</span>
-							<p>
-								<b>{ultraSrtNcstData !== undefined && ultraSrtNcstData.body.items.item?.find((item) => item.category === "WSD")?.obsrValue}</b>
-								<small>m/s</small>
-							</p>
-						</Item>
-					</SwiperSlide>
-					<SwiperSlide>
-						<Item>
-							<p>
-								<span>일출</span>05:17
-							</p>
-							<p>
-								<span>일몰</span>19:17
-							</p>
-						</Item>
-					</SwiperSlide>
-					<SwiperSlide>
-						<Item>
-							<span>오존지수</span>
-							{airInfoData && (
-								<p>
-									<b>
-										{airInfoData?.items ? airInfoData?.items[0].o3Value : ""}
-										<small>ppm</small>
-									</b>
-									<O3GradeTxt className={`airGrade_${airInfoData?.items ? airInfoData?.items[0].o3Grade : ""}`}>{airInfoGradeToTxt(airInfoData?.items ? airInfoData?.items[0].o3Grade : "")}</O3GradeTxt>
-								</p>
-							)}
-						</Item>
-					</SwiperSlide>
-				</Swiper>
-			</WeatherDetailSlider>
+			{airInfoData && ultraSrtNcstData && <TodayWeatherDetailSlider airInfoData={airInfoData} ultraSrtNcstData={ultraSrtNcstData} />}
 		</TodayWeatherWr>
 	);
 };

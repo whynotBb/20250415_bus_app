@@ -2,6 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { UltraSrtNcstReq } from "../models/weather";
 import { getUltraSrtFcst } from "../apis/weatherApi";
 
+/**
+ * 초단기예보 api 호출
+ */
 const useGetUltraSrtFcst = (params: UltraSrtNcstReq) => {
 	const isReady = !!params.base_date && !!params.base_time && params.nx !== undefined && params.ny !== undefined;
 	return useQuery({

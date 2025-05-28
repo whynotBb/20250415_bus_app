@@ -77,6 +77,30 @@ export const getUltraSrtFcst = async (params: UltraSrtNcstReq): Promise<UltraSrt
 };
 
 /**
+ * 단기 예보
+ * @param params
+ * @returns
+ */
+export const getVilageFcst = async (params: UltraSrtNcstReq) => {
+	const { nx, ny, base_date, base_time } = params;
+	try {
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getVilageFcst`, {
+			params: {
+				nx: nx,
+				ny: ny,
+				base_date: base_date,
+				base_time: base_time,
+			},
+		});
+		console.log("단기 예보 호출 -", response.data);
+
+		return response.data.response;
+	} catch (error) {
+		throw new Error(`fail to fetch vilage fcst : ${error}`);
+	}
+};
+
+/**
  * x,y 좌표를 주소로 변환하는 api(kakao)
  * @param location
  */
