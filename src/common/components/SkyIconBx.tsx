@@ -1,5 +1,6 @@
 import { styled } from "@mui/material";
 import { UltraSrtFcstRes } from "../../models/weather";
+import { getValueByCategory } from "../../utils/weatherConvert";
 
 // sky case
 // 1. sky : 맑음(1), 구름많음(3), 흐림(4)
@@ -40,7 +41,7 @@ const SkyIcon = styled("div")({
 const SkyIconBx = ({ ultraSrtData }: { ultraSrtData: UltraSrtFcstRes }) => {
 	console.log("sky icon -", ultraSrtData);
 
-	return ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue === "0" ? <SkyIcon className={`sky sky_${ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "SKY")?.fcstValue}`} /> : <SkyIcon className={`pty pty_${ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue}`} />;
+	return getValueByCategory(ultraSrtData, "PTY") === "0" ? <SkyIcon className={`sky sky_${getValueByCategory(ultraSrtData, "SKY")}`} /> : <SkyIcon className={`pty pty_${getValueByCategory(ultraSrtData, "SKY")}}`} />;
 };
 
 export default SkyIconBx;

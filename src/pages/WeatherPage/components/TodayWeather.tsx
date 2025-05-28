@@ -11,6 +11,7 @@ import SkyIconBx from "../../../common/components/SkyIconBx";
 import useGetVilageFcst from "../../../hooks/useGetVilageFcst";
 import TodayWeatherDetailSlider from "./TodayWeatherDetailSlider";
 import { UltraSrtNcstRes } from "../../../models/weather";
+import VilageWeatherSlider from "./VilageWeatherSlider";
 
 const TodayWeatherWr = styled(Box)({});
 const TodayBx = styled(Grid)({
@@ -146,6 +147,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 						{yesterdayUltraSrtNcstData && ultraSrtNcstData && renderTempDiff(ultraSrtNcstData, yesterdayUltraSrtNcstData)}
 					</ul>
 					<ul>
+						{/* TODO : 최저, 최고 기온은 중기 데이터 불러와야 함 */}
 						<li>최저 13˚</li>
 						<li>최고 26˚</li>
 					</ul>
@@ -153,6 +155,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 				<Grid size={4}>tomorrowWeather</Grid>
 			</Grid>
 			{airInfoData && ultraSrtNcstData && <TodayWeatherDetailSlider airInfoData={airInfoData} ultraSrtNcstData={ultraSrtNcstData} />}
+			{vilageFcstData && <VilageWeatherSlider vilageFcstData={vilageFcstData} />}
 		</TodayWeatherWr>
 	);
 };
