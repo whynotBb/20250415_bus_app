@@ -3,7 +3,7 @@ import { ILocation } from "../models/map";
 import { getCoordToAddr } from "../apis/weatherApi";
 
 /**
- * x, y 좌표 주소로 변환 api
+ * x, y 좌표 주소로 변환 api(kakao)
  * @param location
  * @returns
  */

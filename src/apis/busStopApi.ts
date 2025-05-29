@@ -1,8 +1,12 @@
 import axios from "axios";
-// import { SEOUL_BUS_API_KEY } from "../configs/mapConfig";
 import { GetStationsByPosResponse, ILocation, StationByUidItem, StationItem } from "../models/map";
-// import { XMLParser } from "fast-xml-parser";
 
+/**
+ * 현재위치 기준 반경(radius) 內 버스정류장 정보 불러오기
+ * @param location
+ * @param radius
+ * @returns
+ */
 export const getStationsByPos = async (location: ILocation, radius: number): Promise<GetStationsByPosResponse<StationItem>> => {
 	console.log("getStateion", location, radius);
 
@@ -23,6 +27,11 @@ export const getStationsByPos = async (location: ILocation, radius: number): Pro
 	}
 };
 
+/**
+ * 해당 버스 정류장의 정보(정류장 정보, 도착 버스 정보)
+ * @param arsId 정류장 id
+ * @returns
+ */
 export const getStationByUidItem = async (arsId: number): Promise<GetStationsByPosResponse<StationByUidItem>> => {
 	console.log("getStationByUidItem : 정류장정보 가져오기 api 호출! : arsId는?", arsId);
 	if (arsId === 0) {

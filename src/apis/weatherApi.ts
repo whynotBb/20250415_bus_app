@@ -2,7 +2,13 @@ import axios from "axios";
 import { AirInfoDataResponse } from "../models/airInfo";
 import { CoordToAddrRes, UltraSrtFcstRes, UltraSrtNcstReq, UltraSrtNcstRes } from "../models/weather";
 import { ILocation } from "../models/map";
-// 가까운 측정소 찾기
+
+/**
+ * 가까운 측정소 찾기
+ * @param x
+ * @param y
+ * @returns
+ */
 export const getAirInfoStation = async (x: number, y: number) => {
 	console.log("xy !!??", x, y);
 
@@ -21,7 +27,11 @@ export const getAirInfoStation = async (x: number, y: number) => {
 	}
 };
 
-// 측정소 기준 대기 정보
+/**
+ * 측정소 기준 대기 정보
+ * @param stationName
+ * @returns
+ */
 export const getAirInfoByStation = async (stationName: string): Promise<AirInfoDataResponse> => {
 	try {
 		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getAirInfoByStation`, {
@@ -35,8 +45,11 @@ export const getAirInfoByStation = async (stationName: string): Promise<AirInfoD
 	}
 };
 
-// 초단기 실황조회
-
+/**
+ * 초단기 실황조회
+ * @param params
+ * @returns
+ */
 export const getUltraSrtNcst = async (params: UltraSrtNcstReq): Promise<UltraSrtNcstRes> => {
 	const { nx, ny, base_date, base_time } = params;
 	try {
@@ -55,8 +68,11 @@ export const getUltraSrtNcst = async (params: UltraSrtNcstReq): Promise<UltraSrt
 	}
 };
 
-// 초단기 예보 조회
-
+/**
+ * 초단기 예보 조회
+ * @param params
+ * @returns
+ */
 export const getUltraSrtFcst = async (params: UltraSrtNcstReq): Promise<UltraSrtFcstRes> => {
 	const { nx, ny, base_date, base_time } = params;
 	try {
