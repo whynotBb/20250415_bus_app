@@ -22,7 +22,7 @@ const SkyIcon = styled("div")({
 	"&.sky_4": {
 		backgroundImage: "url(/assets/weather_cloudy_2.svg)",
 	},
-	"&.pty_1": {
+	"&.pty_1,&.pty2": {
 		backgroundImage: "url(/assets/weather_rain.svg)",
 	},
 	"&.pty_2": {
@@ -41,7 +41,7 @@ const SkyIcon = styled("div")({
 const SkyIconBx = ({ ultraSrtData }: { ultraSrtData: UltraSrtFcstRes }) => {
 	console.log("sky icon -", ultraSrtData);
 
-	return getValueByCategory(ultraSrtData, "PTY") === "0" ? <SkyIcon className={`sky sky_${getValueByCategory(ultraSrtData, "SKY")}`} /> : <SkyIcon className={`pty pty_${getValueByCategory(ultraSrtData, "SKY")}}`} />;
+	return getValueByCategory(ultraSrtData, "PTY") === "0" ? <SkyIcon className={`sky sky_${getValueByCategory(ultraSrtData, "SKY")}`} /> : <SkyIcon className={`pty pty_${getValueByCategory(ultraSrtData, "PTY")}`} />;
 };
 
 export default SkyIconBx;

@@ -65,7 +65,6 @@ export interface UltraSrtNcstItem {
 
 // 예보데이터
 export interface UltraSrtFcstItem {
-	type: "forecast";
 	baseDate: string;
 	baseTime: string;
 	category: string;

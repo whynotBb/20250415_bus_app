@@ -21,7 +21,7 @@ const TodayBx = styled(Grid)({
 		position: "relative",
 		textAlign: "center",
 		paddingTop: "45px",
-		".sky": {
+		".sky, .pty": {
 			position: "absolute",
 			top: "4px",
 			left: "4px",

@@ -14,6 +14,7 @@ import useGetUltraSrtNcst from "../../../hooks/useGetUltraSrtNcst";
 import { useWeatherFcst, useWeatherNcst } from "../../../stores/useWeatherInfoStore";
 import AtmosphereBx from "../../../common/components/AtmosphereBx";
 import SkyIconBx from "../../../common/components/SkyIconBx";
+import { getValueByCategory } from "../../../utils/weatherConvert";
 
 const WeatherWr = styled("div")({
 	position: "absolute",
@@ -142,21 +143,10 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 	if (isLoading || airInfoDataIsLoading) return <Loading />;
 	return (
 		<WeatherWr onClick={goToWeatherPage}>
-			{/* <BtnClose>
-				<CloseIcon />
-			</BtnClose> */}
 			<WeatherBx>
-				{/* sky case
-				1. sky : 맑음(1), 구름많음(3), 흐림(4)
-				2. 강수 PTY : 없음(0), 비(1), 비/눈(2), 눈(3), 빗방울(5), 빗방울눈날림(6), 눈날림(7)  */}
-				{/* {ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue === "0" ? (
-					<SkyIcon className={`sky sky_${ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "SKY")?.fcstValue}`} />
-				) : (
-					<SkyIcon className={`pty pty_${ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && ultraSrtData.body.items.item?.find((item) => item.category === "PTY")?.fcstValue}`} />
-				)} */}
 				{ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && <SkyIconBx ultraSrtData={ultraSrtData} />}
 
-				<p>{`${ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && ultraSrtNcstData.body.items.item?.find((item) => item.category === "T1H")?.obsrValue}℃`}</p>
+				<p>{`${ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && getValueByCategory(ultraSrtNcstData, "T1H")}℃`}</p>
 			</WeatherBx>
 			{airInfo && <AtmosphereBx airInfo={airInfo} />}
 		</WeatherWr>
