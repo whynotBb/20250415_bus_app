@@ -153,7 +153,7 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 	return (
 		<VilageWeatherSliderWr>
 			<WeatherDesc>
-				<li className="date">{fcstDate}</li>
+				<li className="date">-</li>
 				<li>
 					강수확률<small>%</small>
 				</li>
