@@ -70,3 +70,25 @@ export const getValueByCategory = (data: UltraSrtNcstRes | UltraSrtFcstRes, cate
 
 	return null;
 };
+
+/**
+ *
+ * @param data : 날씨 데이터 중 item만 보낼 경우
+ * @param category
+ * @returns
+ */
+interface vilageItems {
+	baseDate: string;
+	baseTime: string;
+	category: string;
+	fcstDate: string;
+	fcstTime: string;
+	fcstValue: string;
+	nx: number;
+	ny: number;
+}
+export const getValueByCategorySm = (data: vilageItems[], category: string): string | undefined => {
+	if (!data) return "";
+
+	return data.find((item) => item.category === category)?.fcstValue;
+};

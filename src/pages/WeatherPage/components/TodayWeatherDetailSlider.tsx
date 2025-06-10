@@ -15,6 +15,7 @@ interface TodayWeatherDetailParams {
 }
 
 const WeatherDetailSlider = styled("div")({
+	marginBottom: "20px",
 	".swiper": {
 		padding: "0 20px",
 	},

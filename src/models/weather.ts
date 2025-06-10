@@ -54,7 +54,7 @@ export interface UltraSrtFcstRes {
 
 //관측데이터
 export interface UltraSrtNcstItem {
-	type: "observation";
+	// type: "observation";
 	baseDate: string;
 	baseTime: string;
 	category: string;
