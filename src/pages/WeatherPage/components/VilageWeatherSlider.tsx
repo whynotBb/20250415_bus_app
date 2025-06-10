@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "../../../../node_modules/swiper/swiper.css";
 import { Paper, styled } from "@mui/material";
 import { getValueByCategorySm, vecToTxt } from "../../../utils/weatherConvert";
+// import { useRef, useState } from "react";
 
 const VilageWeatherSliderWr = styled("div")({
 	display: "flex",
@@ -147,10 +148,12 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 		console.log("1dep", item.times[0].fcstTime, idx);
 	});
 
+	// const [fcstDate, setFcstDate] = useState("");
+	// const swiperRef = useRef<any>(null);
 	return (
 		<VilageWeatherSliderWr>
 			<WeatherDesc>
-				<li className="date">-</li>
+				<li className="date">{fcstDate}</li>
 				<li>
 					강수확률<small>%</small>
 				</li>
@@ -165,10 +168,9 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 				</li>
 			</WeatherDesc>
 			<Swiper spaceBetween={6} slidesPerView={"auto"} onSlideChange={() => console.log("slide change")} onSwiper={(swiper) => console.log(swiper)}>
-				{/* {groupForecastsByDateAndTimeArr.map((item) => item.times.map((item2) => item2.items.map((item3) => item3.category)))} */}
 				{groupForecastsByDateAndTimeArr.map((item) =>
 					item.times.map((item2) => (
-						<SwiperSlide>
+						<SwiperSlide className={item.fcstDate}>
 							<Item>
 								<p>
 									{item2.fcstTime.slice(0, 2)}:{item2.fcstTime.slice(2, 4)}
