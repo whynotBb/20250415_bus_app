@@ -1,9 +1,10 @@
 import { UltraSrtFcstItem, UltraSrtFcstRes } from "../../../models/weather";
 
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import "../../../../node_modules/swiper/swiper.css";
 import { Paper, styled } from "@mui/material";
 import { getValueByCategorySm, vecToTxt } from "../../../utils/weatherConvert";
+import { useRef, useState } from "react";
 // import { useRef, useState } from "react";
 
 const VilageWeatherSliderWr = styled("div")({
@@ -57,6 +58,7 @@ const WeatherDesc = styled("ul")({
 	flexDirection: "column",
 	gap: "2px",
 	display: "flex",
+	alignItems: "center",
 	".date": {
 		lineHeight: "22px",
 		background: "#1c549e",
@@ -71,7 +73,7 @@ const WeatherDesc = styled("ul")({
 
 // sky case
 // 1. sky : 맑음(1), 구름많음(3), 흐림(4)
-// 2. 강수 PTY : 없음(0), 비(1), 비/눈(2), 눈(3), 빗방울(5), 빗방울눈날림(6), 눈날림(7)z
+// 2. 강수 PTY : 없음(0), 비(1), 비/눈(2), 눈(3), 빗방울(5), 빗방울눈날림(6), 눈날림(7)
 const SkyIcon = styled("div")({
 	width: "40px",
 	height: "40px",
@@ -126,10 +128,13 @@ function groupForecastsByDateAndTime(data: UltraSrtFcstItem[]) {
 			groupedByTime[item.fcstTime].push(item);
 		});
 
-		const times = Object.entries(groupedByTime).map(([fcstTime, items]) => ({
-			fcstTime,
-			items,
-		}));
+		// 정렬: fcstTime 오름차순
+		const times = Object.entries(groupedByTime)
+			.sort(([timeA], [timeB]) => Number(timeA) - Number(timeB))
+			.map(([fcstTime, items]) => ({
+				fcstTime,
+				items,
+			}));
 
 		return {
 			fcstDate,
@@ -148,12 +153,38 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 		console.log("1dep", item.times[0].fcstTime, idx);
 	});
 
-	// const [fcstDate, setFcstDate] = useState("");
-	// const swiperRef = useRef<any>(null);
+	const [fcstDate, setFcstDate] = useState("");
+	const swiperRef = useRef<SwiperClass | null>(null);
+
+	/**
+	 * 슬라이드 넘길때 active slide 의 data-date 를 가져와 base date 와 비교하여
+	 * fcstDate 업데이트 - 예보의 날짜 표기(오늘, 내일, 날짜)
+	 * @returns
+	 */
+	const handleSlideChange = () => {
+		const baseDate = vilageFcstData.body.items.item[0].baseDate;
+		if (!swiperRef.current) return;
+
+		const swiper = swiperRef.current;
+		const activeSlideEl = swiper.slides[swiper.activeIndex];
+
+		if (activeSlideEl) {
+			const dateAttr = activeSlideEl.getAttribute("data-date");
+			if (dateAttr) {
+				if (baseDate === dateAttr) {
+					setFcstDate("오늘");
+				} else if (Number(dateAttr) - Number(baseDate) === 1) {
+					setFcstDate("내일");
+				} else {
+					setFcstDate(`${dateAttr.slice(4, 6)}/${dateAttr.slice(6, 8)}`);
+				}
+			}
+		}
+	};
 	return (
 		<VilageWeatherSliderWr>
 			<WeatherDesc>
-				<li className="date">-</li>
+				<li className="date">{fcstDate}</li>
 				<li>
 					강수확률<small>%</small>
 				</li>
@@ -167,10 +198,19 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 					바람<small>m/s</small>
 				</li>
 			</WeatherDesc>
-			<Swiper spaceBetween={6} slidesPerView={"auto"} onSlideChange={() => console.log("slide change")} onSwiper={(swiper) => console.log(swiper)}>
+			<Swiper
+				ref={swiperRef}
+				spaceBetween={6}
+				slidesPerView={"auto"}
+				onSlideChange={handleSlideChange}
+				onSwiper={(swiper) => {
+					swiperRef.current = swiper;
+					handleSlideChange(); // 초기값 설정
+				}}
+			>
 				{groupForecastsByDateAndTimeArr.map((item) =>
 					item.times.map((item2) => (
-						<SwiperSlide className={item.fcstDate}>
+						<SwiperSlide data-date={item.fcstDate}>
 							<Item>
 								<p>
 									{item2.fcstTime.slice(0, 2)}:{item2.fcstTime.slice(2, 4)}
@@ -184,10 +224,7 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 									{getValueByCategorySm(item2.items, "POP")}
 									<small>%</small>
 								</p>
-								<p>
-									{getValueByCategorySm(item2.items, "PCP") === "강수없음" ? "0" : getValueByCategorySm(item2.items, "PCP")}
-									<small>mm</small>
-								</p>
+								<p>{getValueByCategorySm(item2.items, "PCP") === "강수없음" ? "-" : getValueByCategorySm(item2.items, "PCP")}</p>
 								<p>
 									{getValueByCategorySm(item2.items, "REH")}
 									<small>%</small>

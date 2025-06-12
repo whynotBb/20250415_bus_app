@@ -148,8 +148,8 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 					</ul>
 					<ul>
 						{/* TODO : 최저, 최고 기온은 중기 데이터 불러와야 함 */}
-						<li>최저 13˚</li>
-						<li>최고 26˚</li>
+						<li>최저 00˚</li>
+						<li>최고 00˚</li>
 					</ul>
 				</TodayBx>
 				<Grid size={4}>tomorrowWeather</Grid>
