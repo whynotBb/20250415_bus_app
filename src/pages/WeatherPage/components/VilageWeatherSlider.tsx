@@ -1,6 +1,7 @@
 import { UltraSrtFcstItem, UltraSrtFcstRes } from "../../../models/weather";
 
-import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper as SwiperClass } from "swiper";
 import "../../../../node_modules/swiper/swiper.css";
 import { Paper, styled } from "@mui/material";
 import { getValueByCategorySm, vecToTxt } from "../../../utils/weatherConvert";
