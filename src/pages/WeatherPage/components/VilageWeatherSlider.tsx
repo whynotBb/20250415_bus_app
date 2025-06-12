@@ -1,7 +1,6 @@
 import { UltraSrtFcstItem, UltraSrtFcstRes } from "../../../models/weather";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Swiper as SwiperClass } from "swiper";
 import "../../../../node_modules/swiper/swiper.css";
 import { Paper, styled } from "@mui/material";
 import { getValueByCategorySm, vecToTxt } from "../../../utils/weatherConvert";
@@ -155,7 +154,7 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 	});
 
 	const [fcstDate, setFcstDate] = useState("");
-	const swiperRef = useRef<SwiperClass | null>(null);
+	const swiperRef = useRef<any>(null);
 
 	/**
 	 * 슬라이드 넘길때 active slide 의 data-date 를 가져와 base date 와 비교하여
