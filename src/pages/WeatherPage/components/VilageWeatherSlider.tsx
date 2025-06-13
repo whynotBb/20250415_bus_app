@@ -27,9 +27,10 @@ const Item = styled(Paper)({
 	flexDirection: "column",
 	gap: "2px",
 	display: "flex",
+	alignItems: "center",
 	small: {
 		fontWeight: "300",
-		color: "#f2f2f2",
+		opacity: ".8",
 		fontSize: "10px",
 		marginLeft: "2px",
 	},
@@ -49,7 +50,7 @@ const Item = styled(Paper)({
 	".atmosphere_bx div": {},
 });
 
-const WeatherDesc = styled("ul")({
+const WeatherDesc = styled("ul")(({ theme }) => ({
 	flexShrink: "0",
 	fontSize: "13px",
 	lineHeight: "20px",
@@ -61,15 +62,16 @@ const WeatherDesc = styled("ul")({
 	alignItems: "center",
 	".date": {
 		lineHeight: "22px",
-		background: "#1c549e",
-		padding: "0 6px",
+		// background: "#1c549e",
+		background: theme.palette.primary.main,
+		padding: "0 10px",
 		borderRadius: "100px",
 		textAlign: "center",
 		color: "#fff",
 		marginBottom: "auto",
 		fontSize: "12px",
 	},
-});
+}));
 
 // sky case
 // 1. sky : 맑음(1), 구름많음(3), 흐림(4)
@@ -159,7 +161,6 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 	/**
 	 * 슬라이드 넘길때 active slide 의 data-date 를 가져와 base date 와 비교하여
 	 * fcstDate 업데이트 - 예보의 날짜 표기(오늘, 내일, 날짜)
-	 * @returns
 	 */
 	const handleSlideChange = () => {
 		const baseDate = vilageFcstData.body.items.item[0].baseDate;
@@ -176,7 +177,7 @@ const VilageWeatherSlider = ({ vilageFcstData }: { vilageFcstData: UltraSrtFcstR
 				} else if (Number(dateAttr) - Number(baseDate) === 1) {
 					setFcstDate("내일");
 				} else {
-					setFcstDate(`${dateAttr.slice(4, 6)}/${dateAttr.slice(6, 8)}`);
+					setFcstDate(`${dateAttr.slice(4, 6)}.${dateAttr.slice(6, 8)}`);
 				}
 			}
 		}

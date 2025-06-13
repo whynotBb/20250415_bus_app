@@ -104,3 +104,48 @@ export interface CoordToAddrRes {
 		};
 	}[];
 }
+
+// 중기 예보 조회 req
+export interface MidFcstReq {
+	regId: string;
+	tmFc: string;
+}
+export interface MidFcstRes {
+	header: {
+		resultCode: string;
+		resultMsg: string;
+	};
+	body: {
+		dataType: "XML" | "JSON";
+		items: {
+			item: {
+				regId: string;
+				rnSt4Am: number;
+				rnSt4Pm: number;
+				rnSt5Am: number;
+				rnSt5Pm: number;
+				rnSt6Am: number;
+				rnSt6Pm: number;
+				rnSt7Am: number;
+				rnSt7Pm: number;
+				rnSt8: number;
+				rnSt9: number;
+				rnSt10: number;
+				wf4Am: string;
+				wf4Pm: string;
+				wf5Am: string;
+				wf5Pm: string;
+				wf6Am: string;
+				wf6Pm: string;
+				wf7Am: string;
+				wf7Pm: string;
+				wf8: string;
+				wf9: string;
+				wf10: string;
+			}[];
+		};
+		pageNo: number;
+		numOfRows: number;
+		totalCount: number;
+	};
+}

@@ -12,6 +12,10 @@ import useGetVilageFcst from "../../../hooks/useGetVilageFcst";
 import TodayWeatherDetailSlider from "./TodayWeatherDetailSlider";
 import { UltraSrtNcstRes } from "../../../models/weather";
 import VilageWeatherSlider from "./VilageWeatherSlider";
+import useGetOpenWeather from "../../../hooks/useGetOpenWeather";
+import { unixToKstConvert } from "../../../utils/unixToKst";
+// import useGetMidLandFcst from "../../../hooks/useGetMidLandFcst";
+// import DailyForecast from "./DailyForecast";
 
 const TodayWeatherWr = styled(Box)({});
 const TodayBx = styled(Grid)({
@@ -130,6 +134,13 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 	console.log("ultraSrtData", ultraSrtData, "ultraSrtNcstData : ", ultraSrtNcstData, "vilageFcstData : ", vilageFcstData);
 	console.log("yesterday", y_base_date, y_base_time_10, yesterdayUltraSrtNcstData);
 
+	// TODO 중기기상예보 불러오기
+	// 중기 예보는 https://openweathermap.org/api 에서 불러와야 하나.. 고민 - 지역 코드 매핑..
+	// const { data: midLandFcstData } = useGetMidLandFcst({ regId: "11B00000", tmFc: "202506130600" });
+	const { data: openWeatherData } = useGetOpenWeather(location);
+	console.log("openWeatherData", openWeatherData);
+	console.log("time", unixToKstConvert(openWeatherData?.data.city.sunrise));
+
 	return (
 		<TodayWeatherWr>
 			<Grid container padding={"10px 20px"}>
@@ -156,6 +167,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 			</Grid>
 			{airInfoData && ultraSrtNcstData && <TodayWeatherDetailSlider airInfoData={airInfoData} ultraSrtNcstData={ultraSrtNcstData} />}
 			{vilageFcstData && <VilageWeatherSlider vilageFcstData={vilageFcstData} />}
+			{/* {midLandFcstData && <DailyForecast midLandFcstData={midLandFcstData} />} */}
 		</TodayWeatherWr>
 	);
 };

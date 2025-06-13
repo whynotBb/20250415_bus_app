@@ -8,7 +8,7 @@ import { getVilageFcst } from "../apis/weatherApi";
 const useGetVilageFcst = (params: UltraSrtNcstReq) => {
 	const isReady = !!params.base_date && !!params.base_time && params.nx !== undefined && params.ny !== undefined;
 	return useQuery({
-		queryKey: ["vilage-fcst", params],
+		queryKey: ["vilage-fcst", params.base_date, params.base_time, params.nx, params.ny],
 		queryFn: () => getVilageFcst(params),
 		enabled: isReady,
 	});

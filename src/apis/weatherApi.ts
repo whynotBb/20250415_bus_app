@@ -1,7 +1,8 @@
 import axios from "axios";
 import { AirInfoDataResponse } from "../models/airInfo";
-import { CoordToAddrRes, UltraSrtFcstRes, UltraSrtNcstReq, UltraSrtNcstRes } from "../models/weather";
+import { CoordToAddrRes, MidFcstReq, MidFcstRes, UltraSrtFcstRes, UltraSrtNcstReq, UltraSrtNcstRes } from "../models/weather";
 import { ILocation } from "../models/map";
+import { OPEN_WEATHER_API_KEY } from "../configs/mapConfig";
 
 /**
  * 가까운 측정소 찾기
@@ -108,9 +109,14 @@ export const getVilageFcst = async (params: UltraSrtNcstReq) => {
 				base_time: base_time,
 			},
 		});
-		console.log("단기 예보 호출 -", response.data);
+		const result = response.data?.response;
 
-		return response.data.response;
+		if (!result) {
+			throw new Error("No response data from API");
+		}
+
+		console.log("단기 예보 호출 -", result);
+		return result;
 	} catch (error) {
 		throw new Error(`fail to fetch vilage fcst : ${error}`);
 	}
@@ -136,5 +142,33 @@ export const getCoordToAddr = async (location: ILocation | undefined): Promise<C
 		return response.data;
 	} catch (error) {
 		throw new Error(`fail to coord to Address : ${error}`);
+	}
+};
+
+export const getMidLandFcst = async (params: MidFcstReq): Promise<MidFcstRes> => {
+	try {
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getMidLandFcst`, {
+			params: {
+				regId: params.regId,
+				tmFc: params.tmFc,
+			},
+		});
+		console.log("getMidLandFcst res", response.data);
+
+		return response.data;
+	} catch (error) {
+		throw new Error(`fail to get mid land fcst : ${error}`);
+	}
+};
+
+export const getOpenWeather = async (params: ILocation) => {
+	console.log(params);
+
+	const APIKEY = OPEN_WEATHER_API_KEY;
+	try {
+		const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${params.latitude}&lon=${params.longitude}&appid=${APIKEY}`);
+		return response;
+	} catch (error) {
+		throw new Error(`fail to get open weather : ${error}`);
 	}
 };

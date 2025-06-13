@@ -113,6 +113,7 @@ const TodayWeatherDetailSlider = ({ airInfoData, ultraSrtNcstData }: TodayWeathe
 					</Item>
 				</SwiperSlide>
 				<SwiperSlide>
+					{/* TODO : 한국천문연구원_출몰시각 정보 api 이용 */}
 					<Item>
 						<p>
 							<span>일출</span>@@:@@
@@ -124,6 +125,7 @@ const TodayWeatherDetailSlider = ({ airInfoData, ultraSrtNcstData }: TodayWeathe
 				</SwiperSlide>
 				<SwiperSlide>
 					<Item>
+						{/* TODO : 기상청_생활기상지수 조회서비스(3.0) : 자외선 지수 조회 가능 - 수정 예정 */}
 						<span>오존지수</span>
 						{airInfoData && (
 							<p>

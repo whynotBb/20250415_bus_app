@@ -75,7 +75,7 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 	console.log("날씨위젯", location);
 	// WGS84 -> TM 변환
 	const { x, y } = convertWGS84ToTM(location.latitude, location.longitude);
-	console.log("TM 좌표", { x, y });
+	console.log("일반 x, y", location.latitude, location.longitude, "TM 좌표", { x, y });
 	// tm 좌표를 이용하여 현위치에서 가까운 측정소 조회하기
 	const { data: AirInfoStationData, isLoading } = useGetAirInfoStation(x, y);
 	// 측정소 주소 저장(중기예보 조회를 위함)
@@ -146,7 +146,9 @@ const WeatherWidget = ({ location }: { location: ILocation }) => {
 			<WeatherBx>
 				{ultraSrtData !== undefined && ultraSrtData.header.resultCode === "00" && <SkyIconBx ultraSrtData={ultraSrtData} />}
 
-				<p>{`${ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && getValueByCategory(ultraSrtNcstData, "T1H")}℃`}</p>
+				{/* <p>{`${ultraSrtNcstData && ultraSrtNcstData.header.resultCode === "00" && getValueByCategory(ultraSrtNcstData, "T1H")}℃`}</p> */}
+				{/* false 로 return 되는 현상 대응 test */}
+				<p>{`${ultraSrtNcstData?.header?.resultCode === "00" && (getValueByCategory(ultraSrtNcstData, "T1H") ?? "")}℃`}</p>
 			</WeatherBx>
 			{airInfo && <AtmosphereBx airInfo={airInfo} />}
 		</WeatherWr>
