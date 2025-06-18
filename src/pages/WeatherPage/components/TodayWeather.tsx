@@ -14,8 +14,6 @@ import { UltraSrtNcstRes } from "../../../models/weather";
 import VilageWeatherSlider from "./VilageWeatherSlider";
 import useGetOpenWeatherForecast from "../../../hooks/useGetOpenWeatherForecast";
 import useGetOpenWeatherCurrent from "../../../hooks/useGetOpenWeatherCurrent";
-// import useGetMidLandFcst from "../../../hooks/useGetMidLandFcst";
-// import DailyForecast from "./DailyForecast";
 
 const TodayWeatherWr = styled(Box)({});
 const TodayBx = styled(Grid)({
@@ -139,8 +137,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 	// const { data: midLandFcstData } = useGetMidLandFcst({ regId: "11B00000", tmFc: "202506130600" });
 	const { data: openWeatherForecastData } = useGetOpenWeatherForecast(location);
 	const { data: openWeatherCurrentData } = useGetOpenWeatherCurrent(location);
-	// console.log("openWeatherData", openWeatherForecastData, "current", openWeatherCurrentData);
-	console.log("current !!!!!!!!!!", openWeatherCurrentData);
+	console.log("!!!!!!!!! current", openWeatherCurrentData);
 
 	return (
 		<TodayWeatherWr>

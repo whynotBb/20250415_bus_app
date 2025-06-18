@@ -7,7 +7,7 @@ import { ILocation } from "../models/map";
  */
 const useGetOpenWeatherCurrent = (params: ILocation) => {
 	return useQuery({
-		queryKey: ["open-weather", params],
+		queryKey: ["open-weather-current", params],
 		queryFn: () => getOpenWeatherCurrent(params),
 	});
 };
