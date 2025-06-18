@@ -12,8 +12,8 @@ import useGetVilageFcst from "../../../hooks/useGetVilageFcst";
 import TodayWeatherDetailSlider from "./TodayWeatherDetailSlider";
 import { UltraSrtNcstRes } from "../../../models/weather";
 import VilageWeatherSlider from "./VilageWeatherSlider";
-import useGetOpenWeather from "../../../hooks/useGetOpenWeather";
-import { unixToKstConvert } from "../../../utils/unixToKst";
+import useGetOpenWeatherForecast from "../../../hooks/useGetOpenWeatherForecast";
+import useGetOpenWeatherCurrent from "../../../hooks/useGetOpenWeatherCurrent";
 // import useGetMidLandFcst from "../../../hooks/useGetMidLandFcst";
 // import DailyForecast from "./DailyForecast";
 
@@ -137,9 +137,10 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 	// TODO 중기기상예보 불러오기
 	// 중기 예보는 https://openweathermap.org/api 에서 불러와야 하나.. 고민 - 지역 코드 매핑..
 	// const { data: midLandFcstData } = useGetMidLandFcst({ regId: "11B00000", tmFc: "202506130600" });
-	const { data: openWeatherData } = useGetOpenWeather(location);
-	console.log("openWeatherData", openWeatherData);
-	console.log("time", unixToKstConvert(openWeatherData?.data.city.sunrise));
+	const { data: openWeatherForecastData } = useGetOpenWeatherForecast(location);
+	const { data: openWeatherCurrentData } = useGetOpenWeatherCurrent(location);
+	// console.log("openWeatherData", openWeatherForecastData, "current", openWeatherCurrentData);
+	console.log("current !!!!!!!!!!", openWeatherCurrentData);
 
 	return (
 		<TodayWeatherWr>
@@ -159,13 +160,13 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 					</ul>
 					<ul>
 						{/* TODO : 최저, 최고 기온은 중기 데이터 불러와야 함 */}
-						<li>최저 00˚</li>
+						<li>최저 ˚</li>
 						<li>최고 00˚</li>
 					</ul>
 				</TodayBx>
 				<Grid size={4}>tomorrowWeather</Grid>
 			</Grid>
-			{airInfoData && ultraSrtNcstData && <TodayWeatherDetailSlider airInfoData={airInfoData} ultraSrtNcstData={ultraSrtNcstData} />}
+			{airInfoData && ultraSrtNcstData && openWeatherForecastData && <TodayWeatherDetailSlider airInfoData={airInfoData} ultraSrtNcstData={ultraSrtNcstData} openWeatherForecastData={openWeatherForecastData} />}
 			{vilageFcstData && <VilageWeatherSlider vilageFcstData={vilageFcstData} />}
 			{/* {midLandFcstData && <DailyForecast midLandFcstData={midLandFcstData} />} */}
 		</TodayWeatherWr>

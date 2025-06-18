@@ -5,13 +5,14 @@ import "../../../../node_modules/swiper/swiper.css";
 
 import AtmosphereBx from "../../../common/components/AtmosphereBx";
 import { airInfoGradeToTxt } from "../../../utils/airInfoGradeToTxt";
-import { vecToTxt } from "../../../utils/weatherConvert";
+import { unix_timestamp, vecToTxt } from "../../../utils/weatherConvert";
 import { AirInfoDataResponse } from "../../../models/airInfo";
-import { UltraSrtNcstRes } from "../../../models/weather";
+import { OpenWeatherForecastReq, UltraSrtNcstRes } from "../../../models/weather";
 
 interface TodayWeatherDetailParams {
 	airInfoData: AirInfoDataResponse;
 	ultraSrtNcstData: UltraSrtNcstRes;
+	openWeatherForecastData: OpenWeatherForecastReq;
 }
 
 const WeatherDetailSlider = styled("div")({
@@ -86,7 +87,7 @@ const O3GradeTxt = styled("span")({
 		},
 	},
 });
-const TodayWeatherDetailSlider = ({ airInfoData, ultraSrtNcstData }: TodayWeatherDetailParams) => {
+const TodayWeatherDetailSlider = ({ airInfoData, ultraSrtNcstData, openWeatherForecastData }: TodayWeatherDetailParams) => {
 	return (
 		<WeatherDetailSlider>
 			<Swiper spaceBetween={10} slidesPerView={"auto"} onSlideChange={() => console.log("slide change")} onSwiper={(swiper) => console.log(swiper)}>
@@ -116,10 +117,12 @@ const TodayWeatherDetailSlider = ({ airInfoData, ultraSrtNcstData }: TodayWeathe
 					{/* TODO : 한국천문연구원_출몰시각 정보 api 이용 */}
 					<Item>
 						<p>
-							<span>일출</span>@@:@@
+							<span>일출 </span>
+							{unix_timestamp(openWeatherForecastData.city.sunrise)}
 						</p>
 						<p>
-							<span>일몰</span>@@:@@
+							<span>일몰 </span>
+							{unix_timestamp(openWeatherForecastData.city.sunset)}
 						</p>
 					</Item>
 				</SwiperSlide>

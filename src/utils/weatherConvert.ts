@@ -92,3 +92,10 @@ export const getValueByCategorySm = (data: vilageItems[], category: string): str
 
 	return data.find((item) => item.category === category)?.fcstValue;
 };
+
+export const unix_timestamp = (t: number): string => {
+	const date = new Date(t * 1000);
+	const hour = "0" + date.getHours();
+	const minute = "0" + date.getMinutes();
+	return hour.substr(-2) + ":" + minute.substr(-2);
+};

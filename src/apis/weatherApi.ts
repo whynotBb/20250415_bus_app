@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AirInfoDataResponse } from "../models/airInfo";
-import { CoordToAddrRes, MidFcstReq, MidFcstRes, UltraSrtFcstRes, UltraSrtNcstReq, UltraSrtNcstRes } from "../models/weather";
+import { CoordToAddrRes, MidFcstReq, MidFcstRes, OpenWeatherCurrentReq, OpenWeatherForecastReq, UltraSrtFcstRes, UltraSrtNcstReq, UltraSrtNcstRes } from "../models/weather";
 import { ILocation } from "../models/map";
 import { OPEN_WEATHER_API_KEY } from "../configs/mapConfig";
 
@@ -161,13 +161,24 @@ export const getMidLandFcst = async (params: MidFcstReq): Promise<MidFcstRes> =>
 	}
 };
 
-export const getOpenWeather = async (params: ILocation) => {
-	console.log(params);
+export const getOpenWeatherForecast = async (params: ILocation): Promise<OpenWeatherForecastReq> => {
+	console.log("예보", params);
 
 	const APIKEY = OPEN_WEATHER_API_KEY;
 	try {
-		const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${params.latitude}&lon=${params.longitude}&appid=${APIKEY}`);
-		return response;
+		const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${params.latitude}&lon=${params.longitude}&appid=${APIKEY}&units=metric&lang=kr`);
+		return response.data;
+	} catch (error) {
+		throw new Error(`fail to get open weather : ${error}`);
+	}
+};
+export const getOpenWeatherCurrent = async (params: ILocation): Promise<OpenWeatherCurrentReq> => {
+	console.log("current", params);
+
+	const APIKEY = OPEN_WEATHER_API_KEY;
+	try {
+		const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${params.latitude}&lon=${params.longitude}&appid=${APIKEY}&units=metric&lang=kr`);
+		return response.data;
 	} catch (error) {
 		throw new Error(`fail to get open weather : ${error}`);
 	}
