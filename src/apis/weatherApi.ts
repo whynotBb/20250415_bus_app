@@ -164,9 +164,13 @@ export const getMidLandFcst = async (params: MidFcstReq): Promise<MidFcstRes> =>
 export const getOpenWeatherForecast = async (params: ILocation): Promise<OpenWeatherForecastReq> => {
 	console.log("예보", params);
 
-	const APIKEY = OPEN_WEATHER_API_KEY;
 	try {
-		const response = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${params.latitude}&lon=${params.longitude}&appid=${APIKEY}&units=metric&lang=kr`);
+		const response = await axios.get(`https://bus-proxy-server.vercel.app/api/getOpenWeatherForecast`, {
+			params: {
+				lat: params.latitude,
+				lon: params.longitude,
+			},
+		});
 		return response.data;
 	} catch (error) {
 		throw new Error(`fail to get open weather : ${error}`);
