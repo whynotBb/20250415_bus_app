@@ -99,3 +99,31 @@ export const unix_timestamp = (t: number): string => {
 	const minute = "0" + date.getMinutes();
 	return hour.substr(-2) + ":" + minute.substr(-2);
 };
+
+export const skyCodeToTxt = (code: string): string => {
+	switch (code) {
+		case "sky_1":
+			return "맑음";
+		case "sky_3":
+			return "구름많음";
+		case "sky_4":
+			return "흐림";
+		case "pty_1":
+			return "비";
+		case "pty_2":
+			return "비/눈";
+		case "pty_3":
+			return "눈";
+		case "pty_4":
+			return "소나기";
+		case "pty_5":
+			return "빗방울";
+		case "pty_6":
+			return "빗방울눈날림";
+		case "pty_7":
+			return "눈날림";
+
+		default:
+			return "-";
+	}
+};

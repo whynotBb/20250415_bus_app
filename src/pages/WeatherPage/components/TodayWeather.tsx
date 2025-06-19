@@ -6,14 +6,13 @@ import useGetAirInfoByStation from "../../../hooks/useGetAirInfoByStation";
 import { convertWGS84ToNxy } from "../../../utils/convertWGS84ToNxy";
 import useGetUltraSrtNcst from "../../../hooks/useGetUltraSrtNcst";
 import useGetUltraSrtFcst from "../../../hooks/useGetUltraSrtFcst";
-import { getValueByCategory, vilageBaseTime } from "../../../utils/weatherConvert";
+import { getValueByCategory, skyCodeToTxt, vilageBaseTime } from "../../../utils/weatherConvert";
 import SkyIconBx from "../../../common/components/SkyIconBx";
 import useGetVilageFcst from "../../../hooks/useGetVilageFcst";
 import TodayWeatherDetailSlider from "./TodayWeatherDetailSlider";
-import { UltraSrtNcstRes } from "../../../models/weather";
+import { UltraSrtFcstRes, UltraSrtNcstRes } from "../../../models/weather";
 import VilageWeatherSlider from "./VilageWeatherSlider";
 import useGetOpenWeatherForecast from "../../../hooks/useGetOpenWeatherForecast";
-import useGetOpenWeatherCurrent from "../../../hooks/useGetOpenWeatherCurrent";
 
 const TodayWeatherWr = styled(Box)({});
 const TodayBx = styled(Grid)({
@@ -73,6 +72,16 @@ const renderTempDiff = (todayData: UltraSrtNcstRes, yesterdayData: UltraSrtNcstR
 			어제보다 {absDiff}˚ {arrow}
 		</li>
 	);
+};
+const renderSkyTxt = (ultraSrtData: UltraSrtFcstRes) => {
+	const items = ultraSrtData.body.items.item;
+	let result = "";
+	if (items.find((item) => item.category === "PTY")?.fcstValue === "0") {
+		result = `sky_${items.find((item) => item.category === "SKY")?.fcstValue}`;
+	} else {
+		result = `pty${items.find((item) => item.category === "PTY")?.fcstValue}`;
+	}
+	return <li>{skyCodeToTxt(result)} |</li>;
 };
 
 const TodayWeather = ({ location }: { location: ILocation }) => {
@@ -136,8 +145,8 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 	// 중기 예보는 https://openweathermap.org/api 에서 불러와야 하나.. 고민 - 지역 코드 매핑..
 	// const { data: midLandFcstData } = useGetMidLandFcst({ regId: "11B00000", tmFc: "202506130600" });
 	const { data: openWeatherForecastData } = useGetOpenWeatherForecast(location);
-	const { data: openWeatherCurrentData } = useGetOpenWeatherCurrent(location);
-	console.log("!!!!!!!!! current", openWeatherCurrentData);
+	// const { data: openWeatherCurrentData } = useGetOpenWeatherCurrent(location);
+	// console.log("!!!!!!!!! current", openWeatherCurrentData);
 
 	return (
 		<TodayWeatherWr>
@@ -152,7 +161,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 					</div>
 
 					<ul>
-						{ultraSrtData !== undefined && <li>{ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue === "0" ? `sky_${ultraSrtData.body.items.item.find((item) => item.category === "SKY")?.fcstValue}` : ultraSrtData !== undefined && `pty_${ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue}`}</li>}
+						{ultraSrtData !== undefined && renderSkyTxt(ultraSrtData)}
 						{yesterdayUltraSrtNcstData && ultraSrtNcstData && renderTempDiff(ultraSrtNcstData, yesterdayUltraSrtNcstData)}
 					</ul>
 					<ul>
