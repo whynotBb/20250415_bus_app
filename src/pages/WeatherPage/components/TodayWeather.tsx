@@ -58,7 +58,7 @@ const renderTempDiff = (todayData: UltraSrtNcstRes, yesterdayData: UltraSrtNcstR
 	const absDiff = Math.abs(diff).toFixed(1); // 소수 1자리
 
 	let className = "";
-	let arrow = "→";
+	let arrow = "-";
 
 	if (diff > 0) {
 		className = "up";
@@ -152,13 +152,13 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 					</div>
 
 					<ul>
-						{ultraSrtData !== undefined && <li>{ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue === "0" ? ultraSrtData.body.items.item.find((item) => item.category === "SKY")?.fcstValue : ultraSrtData !== undefined && ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue}</li>}
+						{ultraSrtData !== undefined && <li>{ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue === "0" ? `sky_${ultraSrtData.body.items.item.find((item) => item.category === "SKY")?.fcstValue}` : ultraSrtData !== undefined && `pty_${ultraSrtData.body.items.item.find((item) => item.category === "PTY")?.fcstValue}`}</li>}
 						{yesterdayUltraSrtNcstData && ultraSrtNcstData && renderTempDiff(ultraSrtNcstData, yesterdayUltraSrtNcstData)}
 					</ul>
 					<ul>
-						{/* TODO : 최저, 최고 기온은 중기 데이터 불러와야 함 */}
+						{/* TODO : 최저, 최고 기온을 제공하지 않음, 예보에서 온도 불러와 배열 만들어서 표기하기 */}
 						<li>최저 ˚</li>
-						<li>최고 00˚</li>
+						<li>최고 ˚</li>
 					</ul>
 				</TodayBx>
 				<Grid size={4}>tomorrowWeather</Grid>
