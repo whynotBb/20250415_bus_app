@@ -10,7 +10,7 @@ import { getValueByCategory, skyCodeToTxt, vilageBaseTime } from "../../../utils
 import SkyIconBx from "../../../common/components/SkyIconBx";
 import useGetVilageFcst from "../../../hooks/useGetVilageFcst";
 import TodayWeatherDetailSlider from "./TodayWeatherDetailSlider";
-import { UltraSrtFcstRes, UltraSrtNcstRes } from "../../../models/weather";
+import { UltraSrtFcstItem, UltraSrtFcstRes, UltraSrtNcstRes } from "../../../models/weather";
 import VilageWeatherSlider from "./VilageWeatherSlider";
 import useGetOpenWeatherForecast from "../../../hooks/useGetOpenWeatherForecast";
 
@@ -73,15 +73,29 @@ const renderTempDiff = (todayData: UltraSrtNcstRes, yesterdayData: UltraSrtNcstR
 		</li>
 	);
 };
+
+/**
+ * sky 코드 > 텍스트 변환
+ * @param ultraSrtData
+ * @returns
+ */
 const renderSkyTxt = (ultraSrtData: UltraSrtFcstRes) => {
 	const items = ultraSrtData.body.items.item;
 	let result = "";
 	if (items.find((item) => item.category === "PTY")?.fcstValue === "0") {
 		result = `sky_${items.find((item) => item.category === "SKY")?.fcstValue}`;
 	} else {
-		result = `pty${items.find((item) => item.category === "PTY")?.fcstValue}`;
+		result = `pty_${items.find((item) => item.category === "PTY")?.fcstValue}`;
 	}
+	console.log("sky code", result);
+
 	return <li>{skyCodeToTxt(result)} |</li>;
+};
+
+const minMaxTemp = (data: UltraSrtFcstItem[]) => {
+	const today = data.filter((el) => el.fcstDate === "20250620");
+	const TMX = today.filter((el) => el.category === "TMX").find((item) => item.fcstValue);
+	console.log("today!!!!", today, TMX);
 };
 
 const TodayWeather = ({ location }: { location: ILocation }) => {
@@ -146,7 +160,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 	// const { data: midLandFcstData } = useGetMidLandFcst({ regId: "11B00000", tmFc: "202506130600" });
 	const { data: openWeatherForecastData } = useGetOpenWeatherForecast(location);
 	// const { data: openWeatherCurrentData } = useGetOpenWeatherCurrent(location);
-	// console.log("!!!!!!!!! current", openWeatherCurrentData);
+	console.log("!!!!!!!!! openWeatherForecastData", openWeatherForecastData);
 
 	return (
 		<TodayWeatherWr>
@@ -165,6 +179,7 @@ const TodayWeather = ({ location }: { location: ILocation }) => {
 						{yesterdayUltraSrtNcstData && ultraSrtNcstData && renderTempDiff(ultraSrtNcstData, yesterdayUltraSrtNcstData)}
 					</ul>
 					<ul>
+						<li>{vilageFcstData && minMaxTemp(vilageFcstData.body.items.item)}</li>
 						{/* TODO : 최저, 최고 기온을 제공하지 않음, 예보에서 온도 불러와 배열 만들어서 표기하기 */}
 						<li>최저 ˚</li>
 						<li>최고 ˚</li>

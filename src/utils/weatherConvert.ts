@@ -100,6 +100,11 @@ export const unix_timestamp = (t: number): string => {
 	return hour.substr(-2) + ":" + minute.substr(-2);
 };
 
+/**
+ * sky 코드 > 텍스트 변환
+ * @param code sky 코드
+ * @returns
+ */
 export const skyCodeToTxt = (code: string): string => {
 	switch (code) {
 		case "sky_1":
