@@ -93,13 +93,25 @@ const SkyIcon = styled("div")({
 	"&.sky_4": {
 		backgroundImage: "url(/assets/weather_cloudy_2.svg)",
 	},
-	"&.pty_1,&.pty2": {
+	"&.pty_1": {
 		backgroundImage: "url(/assets/weather_rain.svg)",
 	},
 	"&.pty_2": {
 		backgroundImage: "url(/assets/weather_rain.svg)",
 	},
 	"&.pty_3": {
+		backgroundImage: "url(/assets/weather_snow.svg)",
+	},
+	"&.pty_4": {
+		backgroundImage: "url(/assets/weather_rain.svg)",
+	},
+	"&.pty_5": {
+		backgroundImage: "url(/assets/weather_rain.svg)",
+	},
+	"&.pty_6": {
+		backgroundImage: "url(/assets/weather_rain.svg)",
+	},
+	"&.pty_7": {
 		backgroundImage: "url(/assets/weather_snow.svg)",
 	},
 });
