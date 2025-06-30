@@ -13,6 +13,8 @@ const AirGradeBar = styled("span")({
 	alignItems: "center",
 	gap: "2px",
 	fontSize: "13px",
+	height: "20px",
+	justifyContent: "center",
 	"&:before": {
 		content: '""',
 		width: "8px",
